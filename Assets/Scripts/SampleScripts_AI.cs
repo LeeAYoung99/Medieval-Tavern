@@ -25,49 +25,46 @@ public class SampleScripts_AI : MonoBehaviour
         targetPos = this.gameObject.transform.position;
         
         distanceLeft = 0.0f;
+
+        //StartCoroutine(this.CharacterMove());
     }
 
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine(this.CharacterMove());
-        
+        MoveCharacter();
     }
     
-    IEnumerator CharacterMove()
+    void MoveCharacter()
     {
-        if (!GlobalVariable.isUIOn()) //UI가 꺼져있다면
+        if (GlobalVariable.isUIOn()) return;
+
+        // 마우스 입력을 받았 을 때
+        if (Input.GetMouseButtonUp(0))
         {
-            // 마우스 입력을 받았 을 때
-            if (Input.GetMouseButtonUp(0))
+            // 마우스로 찍은 위치의 좌표 값을 가져온다
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 10000f))
             {
-                // 마우스로 찍은 위치의 좌표 값을 가져온다
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 10000f))
+
+                if (hit.transform.name == "Floor")
                 {
-
-                    if (hit.transform.name == "Floor")
-                    {
-                        targetPos = hit.point;
-                    }
-
+                    targetPos = hit.point;
+                    // 추적 대상의 위치를 설정하면 바로 추적 시작
+                    nvAgent.destination = targetPos;
                 }
+
             }
-            distanceLeft = Vector3.Distance(targetPos, this.gameObject.transform.position);
-            AnimationUpdate(distanceLeft);
-
-            // 추적 대상의 위치를 설정하면 바로 추적 시작
-            nvAgent.destination = targetPos;
-
-
         }
+        distanceLeft = Vector3.Distance(targetPos, this.gameObject.transform.position);
+        UpdateAnimation(distanceLeft);
 
-        yield return null;
+        return;
 
     }
 
-    void AnimationUpdate(float _distanceLeft)
+    void UpdateAnimation(float _distanceLeft)
     {
         if(_distanceLeft>1.0f) //도착지점 거리차이에 비례해서 애니메이터가 작동하고 안하게 함
         {

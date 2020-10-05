@@ -24,7 +24,7 @@ public class UIController : MonoBehaviour
     public GameObject BoomImage;
 
 
-    //음식 텍스트
+    //음식 텍스트 (개수 숫자)
     public Text turkeyText;
     public Text yoggText;
     public Text mushroomText;
@@ -32,6 +32,13 @@ public class UIController : MonoBehaviour
     public Text dragonText;
     public Text breadText;
     public Text bananaText;
+
+    //음식 UI에 사용되는 넘들
+    enum CookItemType { nothing, turkey, yogg, mushroom, berry, dragon, bread, banana };
+    CookItemType CookItemZoneLeft;//+기준 좌측
+    CookItemType CookItemZoneRight;//+기준 우측
+    public GameObject CookLeft;
+    public GameObject CookRight;
 
 
     public InventoryInfo InventoryInfoScript;
@@ -43,6 +50,8 @@ public class UIController : MonoBehaviour
     void Start()
     {
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
+        CookItemZoneLeft = CookItemType.nothing;
+        CookItemZoneRight = CookItemType.nothing;
     }
 
     // Update is called once per frame
@@ -149,6 +158,78 @@ public class UIController : MonoBehaviour
         dragonText.text = InventoryInfo.dragon.ToString();
         breadText.text = InventoryInfo.bread.ToString();
         bananaText.text = InventoryInfo.banana.ToString();
+    
+        //Left
+
+        if(CookItemZoneLeft==CookItemType.nothing)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
+        }
+        else if (CookItemZoneLeft == CookItemType.turkey)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/칠면조");
+        }
+        else if (CookItemZoneLeft == CookItemType.yogg)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요그소토스의눈알");
+        }
+        else if (CookItemZoneLeft == CookItemType.mushroom)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/발광버섯");
+        }
+        else if (CookItemZoneLeft == CookItemType.berry)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/산딸기");
+        }
+        else if (CookItemZoneLeft == CookItemType.dragon)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요정드래곤의날개");
+        }
+        else if (CookItemZoneLeft == CookItemType.bread)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/마법식빵");
+        }
+        else if (CookItemZoneLeft == CookItemType.banana)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/보랏빛바나나");
+        }
+
+        //Right
+
+        if (CookItemZoneRight == CookItemType.nothing)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
+        }
+        else if (CookItemZoneRight == CookItemType.turkey)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/칠면조");
+        }
+        else if (CookItemZoneRight == CookItemType.yogg)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요그소토스의눈알");
+        }
+        else if (CookItemZoneRight == CookItemType.mushroom)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/발광버섯");
+        }
+        else if (CookItemZoneRight == CookItemType.berry)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/산딸기");
+        }
+        else if (CookItemZoneRight == CookItemType.dragon)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요정드래곤의날개");
+        }
+        else if (CookItemZoneRight == CookItemType.bread)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/마법식빵");
+        }
+        else if (CookItemZoneRight == CookItemType.banana)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/보랏빛바나나");
+        }
+
+
     }
 
     public void ResistanceItemBuy() //아이템 구매 
