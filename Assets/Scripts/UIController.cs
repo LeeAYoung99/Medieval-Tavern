@@ -5,6 +5,10 @@ using UnityEngine.UI;
 
 public class UIController : MonoBehaviour
 {
+    /// <summary>
+    /// 이 스크립트는 UI들을 통합적으로 관리해주는 스크립트입니다.
+    /// </summary>
+
     public GameObject BoardGameUI; //실제 보드게임 UI 오브젝트 
     public GameObject CookUI; //실제 쿡 UI 오브젝트 
 
@@ -34,14 +38,13 @@ public class UIController : MonoBehaviour
     public Text bananaText;
 
     //음식 UI에 사용되는 넘들
-    enum CookItemType { nothing, turkey, yogg, mushroom, berry, dragon, bread, banana };
-    CookItemType CookItemZoneLeft;//+기준 좌측
-    CookItemType CookItemZoneRight;//+기준 우측
+    public enum CookItemType { nothing, turkey, yogg, mushroom, berry, dragon, bread, banana };
+    public static CookItemType CookItemZoneLeft;//+기준 좌측
+    public static CookItemType CookItemZoneRight;//+기준 우측
     public GameObject CookLeft;
     public GameObject CookRight;
-
-
-    public InventoryInfo InventoryInfoScript;
+    
+    private InventoryInfo InventoryInfoScript;
 
 
     float time = 0;
@@ -52,6 +55,7 @@ public class UIController : MonoBehaviour
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
         CookItemZoneLeft = CookItemType.nothing;
         CookItemZoneRight = CookItemType.nothing;
+        
     }
 
     // Update is called once per frame
@@ -232,6 +236,8 @@ public class UIController : MonoBehaviour
 
     }
 
+    //아래는 버튼에 사용한 스크립트입니다.
+
     public void ResistanceItemBuy() //아이템 구매 
     {
         if (InventoryInfo.resistance == false)
@@ -261,5 +267,7 @@ public class UIController : MonoBehaviour
             InventoryInfo.boom = true;
         }
     }
+
+  
 
 }
