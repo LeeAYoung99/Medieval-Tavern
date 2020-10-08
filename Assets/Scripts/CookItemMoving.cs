@@ -20,8 +20,8 @@ public class CookItemMoving : MonoBehaviour, IBeginDragHandler, IEndDragHandler,
     // Start is called before the first frame update
     void Start()
     {
-        bool isLeftEnter = false;
-        bool isRightEnter = false;
+        isLeftEnter = false;
+        isRightEnter = false;
     }
 
     // Update is called once per frame

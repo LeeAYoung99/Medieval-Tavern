@@ -12,6 +12,13 @@ public class UIController : MonoBehaviour
     public GameObject BoardGameUI; //실제 보드게임 UI 오브젝트 
     public GameObject CookUI; //실제 쿡 UI 오브젝트 
 
+    //요리가 지금 되고 있나 아닌가 체크!
+    public enum CookingPotState { isPotEmpty, isCooking, isFoodReady }; //PotEmpty: 비어있을때. isCooking:요리중이라 게이지 올라감. FoodReady: 요리가 준비되어서 가져갈수있음.
+    public enum Food { KnightSoup, BerrySandwich, WingSalad, WitchSoup, RoastedTurkey };
+    public static CookingPotState CookingState; //지금 팟 안에는 어떤 상태일까?
+    public static Food PotFood; //팟 안에 어떤 음식이 들어있을까?
+    float cookingTime; //요리중일때 시간 돌아감.
+
     //레지스탕스
     public Text ResistanceBuyText;
     public GameObject ResistanceButton;
@@ -52,6 +59,8 @@ public class UIController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        CookingState = CookingPotState.isPotEmpty;
+        cookingTime = 0;
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
         CookItemZoneLeft = CookItemType.nothing;
         CookItemZoneRight = CookItemType.nothing;
@@ -61,54 +70,45 @@ public class UIController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        ActiveController();
+        UIActiveController();
         BoardGameUIController();
         CookUIController();
+        CookingController();
+        
     }
 
-    void ActiveController() //UI 액티브들을 총괄하는 함수
+    void UIActiveController() //UI 액티브들을 총괄하는 함수
     {
         if (GlobalVariable.boardGameUIBool == true) //보드게임 UI가 켜져있는 상태라면
         {
-            BoardGameUI.SetActive(true);
+            if (BoardGameUI.activeSelf == false)//꺼져있으면
+            {
+                BoardGameUI.SetActive(true);
+            }
 
             if (time < 0.5f)
             {
                 BoardGameUI.GetComponent<Image>().color = new Color(1, 1, 1, time / 0.5f); //0.5초에 걸쳐 밝아짐
-
             }
-
             time += Time.deltaTime;
         }
 
         if (GlobalVariable.cookUIBool == true) //보드게임 UI가 켜져있는 상태라면
         {
-            CookUI.SetActive(true);
-
+            if (CookUI.activeSelf == false)//꺼져있으면
+            {
+                CookUI.SetActive(true);
+            }
+              
             if (time < 0.5f)
             {
                 CookUI.GetComponent<Image>().color = new Color(1, 1, 1, time / 0.5f); //0.5초에 걸쳐 밝아짐
-
             }
-
             time += Time.deltaTime;
         }
 
     }
 
-    public void BoardGameExitButton() // 보드게임 UI X버튼을 누른다면?
-    {
-        GlobalVariable.boardGameUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
-        BoardGameUI.SetActive(false); //UI도 끄기
-        time = 0; //시간도 초기화
-    }
-
-    public void CookExitButton() // 쿡 UI X버튼을 누른다면?
-    {
-        GlobalVariable.cookUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
-        CookUI.SetActive(false); //UI도 끄기
-        time = 0; //시간도 초기화
-    }
 
     void BoardGameUIController()
     {
@@ -153,8 +153,9 @@ public class UIController : MonoBehaviour
         }
     }
 
-    void CookUIController()
+    void CookUIController() //요리 팝업 UI에 사용한 함수입니다.
     {
+        
         turkeyText.text = InventoryInfo.turkey.ToString();
         yoggText.text = InventoryInfo.yogg.ToString();
         mushroomText.text = InventoryInfo.mushroom.ToString();
@@ -236,6 +237,15 @@ public class UIController : MonoBehaviour
 
     }
 
+    void CookingController() //요리 도중에 사용하는 함수입니다.
+    {
+        
+
+        //cookingTime += Time.deltaTime;
+
+
+    }
+
     //아래는 버튼에 사용한 스크립트입니다.
 
     public void ResistanceItemBuy() //아이템 구매 
@@ -268,6 +278,28 @@ public class UIController : MonoBehaviour
         }
     }
 
-  
+    public void CookButton()
+    {
+        //둘중에 하나가 비어 있는 경우에는 요리가 되지 않게 해야함.
+        if (CookItemZoneLeft == CookItemType.nothing || CookItemZoneRight == CookItemType.nothing) return;
+
+        CookingState = CookingPotState.isCooking;
+        Debug.Log("요리...시작합니다...uicontroller");
+        CookExitButton();
+    }
+
+    public void BoardGameExitButton() // 보드게임 UI X버튼을 누른다면?
+    {
+        GlobalVariable.boardGameUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+        BoardGameUI.SetActive(false); //UI도 끄기
+        time = 0; //시간도 초기화
+    }
+
+    public void CookExitButton() // 쿡 UI X버튼을 누른다면?
+    {
+        GlobalVariable.cookUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+        CookUI.SetActive(false); //UI도 끄기
+        time = 0; //시간도 초기화
+    }
 
 }
