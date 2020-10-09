@@ -15,6 +15,12 @@ public class CameraMove : MonoBehaviour
     bool back = false;
     bool right = false;
 
+    //마우스 이동 범위
+    float maximumX = 22.0f;
+    float maximumZ = 1.0f;
+    float minimumX = -13.0f;
+    float minimumZ = -51.0f;
+
     Vector3 BeforePosition;
 
     // Start is called before the first frame update
@@ -30,10 +36,37 @@ public class CameraMove : MonoBehaviour
         {
             CameraMouseOver(); //화면에 마우스를 올려놓아 움직이는 것을 허용한다
         }
+        RestrictCameraArea();
         
     }
 
-   
+    void RestrictCameraArea()
+    {
+        if (Cam.transform.position.x < minimumX)
+        {
+            Vector3 temp = Cam.transform.position;
+            temp.x = minimumX;
+            Cam.transform.position = temp;
+        }
+        if (Cam.transform.position.x > maximumX)
+        {
+            Vector3 temp = Cam.transform.position;
+            temp.x = maximumX;
+            Cam.transform.position = temp;
+        }
+        if (Cam.transform.position.z < minimumZ)
+        {
+            Vector3 temp = Cam.transform.position;
+            temp.z = minimumZ;
+            Cam.transform.position = temp;
+        }
+        if (Cam.transform.position.z > maximumZ)
+        {
+            Vector3 temp = Cam.transform.position;
+            temp.z = maximumZ;
+            Cam.transform.position = temp;
+        }
+    }
  
 
     void CameraMouseOver()

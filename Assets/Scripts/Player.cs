@@ -16,6 +16,8 @@ public class Player : MonoBehaviour
     private float distanceLeft;
     private Animator animator;
 
+    UIController.Food playerOwnedFood;
+
     // Use this for initialization
     void Start()
     {
@@ -27,7 +29,9 @@ public class Player : MonoBehaviour
         targetPos = this.gameObject.transform.position;
         
         distanceLeft = 0.0f;
-        
+        playerOwnedFood = UIController.Food.Nothing; //플레이어가 보유한 음식 비우기.
+        Debug.Log("플레이어가 요리를 집으면 가시적으로 보이게 바꾸자.player");
+
     }
 
     // Update is called once per frame
@@ -39,6 +43,11 @@ public class Player : MonoBehaviour
     void MoveCharacter()
     {
         if (GlobalVariable.isUIOn()) return; //UI가 켜져있으면 안움직임
+        if (GlobalVariable.didYouClickedButton == true)
+        {
+            GlobalVariable.didYouClickedButton = false;
+            return;
+        }
 
         // 마우스 입력을 받았 을 때
         if (Input.GetMouseButtonUp(0))
@@ -99,11 +108,16 @@ public class Player : MonoBehaviour
             }
             else if (UIController.CookingState == UIController.CookingPotState.isCooking)
             {
-                //쿠킹 게이지 올라가는 거 보여주기
+               
             }
             else if (UIController.CookingState == UIController.CookingPotState.isFoodReady)
             {
-                //완료된 음식 보여주기
+                playerOwnedFood = UIController.PotFood; //플레이어에게 팟 안에 든 음식 주기
+                Debug.Log("플레이어가" + playerOwnedFood.ToString() + "을집었다.player");
+                UIController.PotFood = UIController.Food.Nothing; //팟 안을 비우기
+                UIController.CookingState = UIController.CookingPotState.isPotEmpty; //팟 상태도 비운 상태로 바꾸기
+                UIController.CookItemZoneLeft = UIController.CookItemType.nothing;
+                UIController.CookItemZoneRight = UIController.CookItemType.nothing;
             }
         }
 

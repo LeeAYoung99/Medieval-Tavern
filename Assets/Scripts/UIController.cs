@@ -14,10 +14,12 @@ public class UIController : MonoBehaviour
 
     //요리가 지금 되고 있나 아닌가 체크!
     public enum CookingPotState { isPotEmpty, isCooking, isFoodReady }; //PotEmpty: 비어있을때. isCooking:요리중이라 게이지 올라감. FoodReady: 요리가 준비되어서 가져갈수있음.
-    public enum Food { KnightSoup, BerrySandwich, WingSalad, WitchSoup, RoastedTurkey };
+    public enum Food { Nothing, WitchSoup, BerrySandwich, WingSalad, Spoiled, RoastedTurkey, Stick }; //Food+Drink둘다.
     public static CookingPotState CookingState; //지금 팟 안에는 어떤 상태일까?
     public static Food PotFood; //팟 안에 어떤 음식이 들어있을까?
-    float cookingTime; //요리중일때 시간 돌아감.
+    //float cookingTime; //요리중일때 시간 돌아감.
+    public GameObject CookSliderPrefab;//프리팹
+    public Transform SliderParent;
 
     //레지스탕스
     public Text ResistanceBuyText;
@@ -60,10 +62,12 @@ public class UIController : MonoBehaviour
     void Start()
     {
         CookingState = CookingPotState.isPotEmpty;
-        cookingTime = 0;
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
         CookItemZoneLeft = CookItemType.nothing;
         CookItemZoneRight = CookItemType.nothing;
+        PotFood = Food.Nothing;
+        Debug.Log("요리가 완성되면 UI에서 완성된 요리가 보이게 하자.uicontroller");
+        Debug.Log("플레이어가 술을 집었을 때 요리랑 안겹치게 하자.uicontroller");
         
     }
 
@@ -73,7 +77,6 @@ public class UIController : MonoBehaviour
         UIActiveController();
         BoardGameUIController();
         CookUIController();
-        CookingController();
         
     }
 
@@ -92,14 +95,13 @@ public class UIController : MonoBehaviour
             }
             time += Time.deltaTime;
         }
-
-        if (GlobalVariable.cookUIBool == true) //보드게임 UI가 켜져있는 상태라면
+        else if (GlobalVariable.cookUIBool == true) //보드게임 UI가 켜져있는 상태라면
         {
             if (CookUI.activeSelf == false)//꺼져있으면
             {
                 CookUI.SetActive(true);
             }
-              
+
             if (time < 0.5f)
             {
                 CookUI.GetComponent<Image>().color = new Color(1, 1, 1, time / 0.5f); //0.5초에 걸쳐 밝아짐
@@ -107,6 +109,13 @@ public class UIController : MonoBehaviour
             time += Time.deltaTime;
         }
 
+        if (GlobalVariable.cookSliderBool == true) //쿡 슬라이더 UI가 켜져있는 상태라면
+        {
+            GameObject _slider = Instantiate(CookSliderPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            _slider.gameObject.transform.SetParent(SliderParent, false);
+            GlobalVariable.cookSliderBool = false;
+        
+        }
     }
 
 
@@ -237,15 +246,6 @@ public class UIController : MonoBehaviour
 
     }
 
-    void CookingController() //요리 도중에 사용하는 함수입니다.
-    {
-        
-
-        //cookingTime += Time.deltaTime;
-
-
-    }
-
     //아래는 버튼에 사용한 스크립트입니다.
 
     public void ResistanceItemBuy() //아이템 구매 
@@ -278,19 +278,146 @@ public class UIController : MonoBehaviour
         }
     }
 
+   
+
     public void CookButton()
     {
         //둘중에 하나가 비어 있는 경우에는 요리가 되지 않게 해야함.
         if (CookItemZoneLeft == CookItemType.nothing || CookItemZoneRight == CookItemType.nothing) return;
 
-        CookingState = CookingPotState.isCooking;
-        Debug.Log("요리...시작합니다...uicontroller");
+        //재료가 부족하면 요리가 되지 않게 해야함.
+        //좌=우 일때 재료 2소모 체크
+        CheckFoodQuantity();
+
+        //재료 소모
+        UseFoodQuantity();
+        
+
+        //조합에 따라 요리가 다르게
+        if ((CookItemZoneLeft == CookItemType.yogg && CookItemZoneRight == CookItemType.dragon) ||
+        (CookItemZoneLeft == CookItemType.dragon && CookItemZoneRight == CookItemType.yogg))
+        {
+            PotFood = Food.Stick;
+        }
+        else if ((CookItemZoneLeft == CookItemType.berry && CookItemZoneRight == CookItemType.bread) ||
+            (CookItemZoneLeft == CookItemType.bread && CookItemZoneRight == CookItemType.berry))
+        {
+            PotFood = Food.BerrySandwich;
+        }
+        else if ((CookItemZoneLeft == CookItemType.dragon && CookItemZoneRight == CookItemType.banana) ||
+            (CookItemZoneLeft == CookItemType.banana && CookItemZoneRight == CookItemType.dragon))
+        {
+            PotFood = Food.WingSalad;
+        }
+        else if ((CookItemZoneLeft == CookItemType.turkey && CookItemZoneRight == CookItemType.bread) ||
+            (CookItemZoneLeft == CookItemType.bread && CookItemZoneRight == CookItemType.turkey))
+        {
+            PotFood = Food.RoastedTurkey;
+        }
+        else if ((CookItemZoneLeft == CookItemType.berry && CookItemZoneRight == CookItemType.mushroom) ||
+            (CookItemZoneLeft == CookItemType.mushroom && CookItemZoneRight == CookItemType.berry))
+        {
+            PotFood = Food.WitchSoup;
+        }
+        else
+        {
+            PotFood = Food.Spoiled;
+        }
+
         CookExitButton();
+        CookingState = CookingPotState.isCooking;
+        GlobalVariable.cookSliderBool = true;
+
+        
+    }
+
+    void UseFoodQuantity() //재료를 소모하게 하는 함수입니다.
+    {
+        //좌
+        if (CookItemZoneLeft == CookItemType.turkey) InventoryInfo.turkey--;
+        else if (CookItemZoneLeft == CookItemType.yogg) InventoryInfo.yogg--;
+        else if (CookItemZoneLeft == CookItemType.mushroom) InventoryInfo.mushroom--;
+        else if (CookItemZoneLeft == CookItemType.berry) InventoryInfo.berry--;
+        else if (CookItemZoneLeft == CookItemType.dragon) InventoryInfo.dragon--;
+        else if (CookItemZoneLeft == CookItemType.bread) InventoryInfo.bread--;
+        else if (CookItemZoneLeft == CookItemType.banana) InventoryInfo.banana--;
+
+        //우
+        if (CookItemZoneRight == CookItemType.turkey) InventoryInfo.turkey--;
+        else if (CookItemZoneRight == CookItemType.yogg) InventoryInfo.yogg--;
+        else if (CookItemZoneRight == CookItemType.mushroom) InventoryInfo.mushroom--;
+        else if (CookItemZoneRight == CookItemType.berry) InventoryInfo.berry--;
+        else if (CookItemZoneRight == CookItemType.dragon) InventoryInfo.dragon--;
+        else if (CookItemZoneRight == CookItemType.bread) InventoryInfo.bread--;
+        else if (CookItemZoneRight == CookItemType.banana) InventoryInfo.banana--;
+
+    }
+
+    void CheckFoodQuantity() //재료를 0개인데 사용하지 않도록 브레이크를 걸어주는 함수
+    {
+        if (CookItemZoneLeft == CookItemType.turkey && CookItemZoneRight == CookItemType.turkey && InventoryInfo.turkey <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.yogg && CookItemZoneRight == CookItemType.yogg && InventoryInfo.yogg <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.mushroom && CookItemZoneRight == CookItemType.mushroom && InventoryInfo.mushroom <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.berry && CookItemZoneRight == CookItemType.berry && InventoryInfo.berry <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.dragon && CookItemZoneRight == CookItemType.dragon && InventoryInfo.dragon <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.bread && CookItemZoneRight == CookItemType.bread && InventoryInfo.bread <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.banana && CookItemZoneRight == CookItemType.banana && InventoryInfo.banana <= 1)
+        {
+            return;
+        }
+        //좌측or 우측 체크
+        else if ((CookItemZoneLeft == CookItemType.turkey || CookItemZoneRight == CookItemType.turkey) && InventoryInfo.turkey <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.yogg || CookItemZoneRight == CookItemType.yogg) && InventoryInfo.yogg <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.mushroom || CookItemZoneRight == CookItemType.mushroom) && InventoryInfo.mushroom <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.berry || CookItemZoneRight == CookItemType.berry) && InventoryInfo.berry <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.dragon || CookItemZoneRight == CookItemType.dragon) && InventoryInfo.dragon <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.bread || CookItemZoneRight == CookItemType.bread) && InventoryInfo.bread <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.banana || CookItemZoneRight == CookItemType.banana) && InventoryInfo.banana <= 0)
+        {
+            return;
+        }
     }
 
     public void BoardGameExitButton() // 보드게임 UI X버튼을 누른다면?
     {
         GlobalVariable.boardGameUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+        GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
         BoardGameUI.SetActive(false); //UI도 끄기
         time = 0; //시간도 초기화
     }
@@ -298,6 +425,7 @@ public class UIController : MonoBehaviour
     public void CookExitButton() // 쿡 UI X버튼을 누른다면?
     {
         GlobalVariable.cookUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+        GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
         CookUI.SetActive(false); //UI도 끄기
         time = 0; //시간도 초기화
     }
