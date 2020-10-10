@@ -16,7 +16,9 @@ public class Player : MonoBehaviour
     private float distanceLeft;
     private Animator animator;
 
-    UIController.Food playerOwnedFood;
+    public GameObject PlayerOwnedUI;
+
+    public static UIController.Food playerOwnedFood; //플레이어가 현재 들고 있는 음식은 ?
 
     // Use this for initialization
     void Start()
@@ -30,7 +32,6 @@ public class Player : MonoBehaviour
         
         distanceLeft = 0.0f;
         playerOwnedFood = UIController.Food.Nothing; //플레이어가 보유한 음식 비우기.
-        Debug.Log("플레이어가 요리를 집으면 가시적으로 보이게 바꾸자.player");
 
     }
 
@@ -38,6 +39,14 @@ public class Player : MonoBehaviour
     void Update()
     {
         MoveCharacter();
+        if (playerOwnedFood == UIController.Food.Nothing && PlayerOwnedUI.activeSelf == true) //음식에 아무것도 없고 ui가 켜져있으면
+        {
+            PlayerOwnedUI.SetActive(false);
+        }
+        else if(playerOwnedFood != UIController.Food.Nothing && PlayerOwnedUI.activeSelf == false) //음식을 들고있고 ui가 꺼져있으면
+        {
+            PlayerOwnedUI.SetActive(true);
+        }
     }
     
     void MoveCharacter()
@@ -98,29 +107,36 @@ public class Player : MonoBehaviour
         }
         else if (col.transform.tag == "Cook") // Cook 영역에 충돌하면
         {
-            targetPos = this.gameObject.transform.position; //제자리로 가!
-            nvAgent.destination = targetPos;
-            UpdateAnimation(0);//그 자리에 멈추니까 거리를 0으로 주는 애니메이션 업뎃
-
+            if (playerOwnedFood != UIController.Food.Nothing) return; //플레이어가 음식 들고있으면 상호작용 x
+            
             if (UIController.CookingState == UIController.CookingPotState.isPotEmpty)
             {
+                targetPos = this.gameObject.transform.position; //제자리로 가!
+                nvAgent.destination = targetPos;
+                UpdateAnimation(0);//그 자리에 멈추니까 거리를 0으로 주는 애니메이션 업뎃
+
                 GlobalVariable.cookUIBool = true; //쿠킹 UI가 켜졌다!
             }
-            else if (UIController.CookingState == UIController.CookingPotState.isCooking)
-            {
-               
-            }
-            else if (UIController.CookingState == UIController.CookingPotState.isFoodReady)
-            {
-                playerOwnedFood = UIController.PotFood; //플레이어에게 팟 안에 든 음식 주기
-                Debug.Log("플레이어가" + playerOwnedFood.ToString() + "을집었다.player");
-                UIController.PotFood = UIController.Food.Nothing; //팟 안을 비우기
-                UIController.CookingState = UIController.CookingPotState.isPotEmpty; //팟 상태도 비운 상태로 바꾸기
-                UIController.CookItemZoneLeft = UIController.CookItemType.nothing;
-                UIController.CookItemZoneRight = UIController.CookItemType.nothing;
-            }
+            
         }
 
+    }
+
+    void OnTriggerStay(Collider col)
+    {
+        if (col.transform.tag == "Cook") // Cook 영역에 충돌하면
+        {
+            if (playerOwnedFood != UIController.Food.Nothing) return; //플레이어가 음식 들고있으면 상호작용 x
+            
+            if (UIController.CookingState == UIController.CookingPotState.isFoodReady)
+            {
+                playerOwnedFood = UIController.PotFood; //플레이어에게 팟 안에 든 음식 주기
+                UIController.PotFood = UIController.Food.Nothing; //팟 안을 비우기
+                UIController.CookingState = UIController.CookingPotState.isPotEmpty; //팟 상태도 비운 상태로 바꾸기
+                UIController.CookItemZoneLeft = UIController.CookItemType.nothing; //왼쪽 비우기
+                UIController.CookItemZoneRight = UIController.CookItemType.nothing; //오른쪽 비우기
+            }
+        }
     }
     
 }

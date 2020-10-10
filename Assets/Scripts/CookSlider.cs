@@ -5,6 +5,11 @@ using UnityEngine.UI;
 
 public class CookSlider : MonoBehaviour
 {
+    /// <summary>
+    /// 
+    /// 슬라이더 프리팹입니다.
+    /// 이 스크립트에는 static 변수를 쓰지 않도록 주의합시다.
+    /// </summary>
     private GameObject Cook;
     private GameObject MyCamera;
     public GameObject SliderBackground;
@@ -13,7 +18,7 @@ public class CookSlider : MonoBehaviour
     private Slider MySlider;
 
     float cookTime;
-    float maxTime = 25.0f;
+    float maxTime = 10.0f;
 
     public float minimumDist = 23.0f;
     public float maximumDist = 80.0f;
@@ -41,7 +46,7 @@ public class CookSlider : MonoBehaviour
         }
 
         ChangeSliderTransparent();
-        // 오브젝트에 따른 HP Bar 위치 이동
+        // 오브젝트에 따른 위치 이동
         this.transform.position = Camera.main.WorldToScreenPoint(Cook.transform.position + new Vector3(3.0f, 0.8f, 2.0f));
         cookTime += Time.deltaTime;
         MySlider.value = cookTime / maxTime;

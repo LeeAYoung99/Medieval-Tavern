@@ -20,6 +20,7 @@ public class UIController : MonoBehaviour
     //float cookingTime; //요리중일때 시간 돌아감.
     public GameObject CookSliderPrefab;//프리팹
     public Transform SliderParent;
+    public GameObject CookOwnedUI;
 
     //레지스탕스
     public Text ResistanceBuyText;
@@ -66,8 +67,6 @@ public class UIController : MonoBehaviour
         CookItemZoneLeft = CookItemType.nothing;
         CookItemZoneRight = CookItemType.nothing;
         PotFood = Food.Nothing;
-        Debug.Log("요리가 완성되면 UI에서 완성된 요리가 보이게 하자.uicontroller");
-        Debug.Log("플레이어가 술을 집었을 때 요리랑 안겹치게 하자.uicontroller");
         
     }
 
@@ -77,6 +76,7 @@ public class UIController : MonoBehaviour
         UIActiveController();
         BoardGameUIController();
         CookUIController();
+
         
     }
 
@@ -116,6 +116,16 @@ public class UIController : MonoBehaviour
             GlobalVariable.cookSliderBool = false;
         
         }
+
+        if (PotFood == Food.Nothing && CookOwnedUI.activeSelf == true && CookingState == CookingPotState.isPotEmpty) //음식에 아무것도 없고 ui가 켜져있고 음식이 비어있으면
+        {
+            CookOwnedUI.SetActive(false);
+        }
+        else if (PotFood != Food.Nothing && CookOwnedUI.activeSelf == false && CookingState == CookingPotState.isFoodReady) //음식을 들고있고 ui가 꺼져있으면 음식이 준비되어있으면
+        {
+            CookOwnedUI.SetActive(true);
+        }
+
     }
 
 
