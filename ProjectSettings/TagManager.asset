@@ -9,7 +9,6 @@ TagManager:
   - Cook
   - COOKLEFT
   - COOKRIGHT
-  - TrashCan
   layers:
   - Default
   - TransparentFX

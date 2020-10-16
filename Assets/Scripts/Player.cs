@@ -137,12 +137,6 @@ public class Player : MonoBehaviour
                 UIController.CookItemZoneRight = UIController.CookItemType.nothing; //오른쪽 비우기
             }
         }
-        else if(col.transform.tag=="TrashCan")
-        {
-            if (playerOwnedFood == UIController.Food.Nothing) return;
-
-            playerOwnedFood = UIController.Food.Nothing;
-        }
     }
     
 }

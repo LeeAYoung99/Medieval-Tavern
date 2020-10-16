@@ -56,17 +56,6 @@ public class UIController : MonoBehaviour
     
     private InventoryInfo InventoryInfoScript;
 
-    Dictionary<CookItemType, string> loadItemsPerType = new Dictionary<CookItemType, string>()
-    {
-        {CookItemType.nothing, "Images/VoidImage" },
-        {CookItemType.turkey, "Images/Item/칠면조" },
-        {CookItemType.yogg, "Images/Item/요그소토스의눈알" },
-        {CookItemType.mushroom, "Images/Item/발광버섯" },
-        {CookItemType.berry, "Images/Item/산딸기" },
-        {CookItemType.dragon, "Images/Item/요정드래곤의날개" },
-        {CookItemType.bread, "Images/Item/마법식빵" },
-        {CookItemType.banana, "Images/Item/보랏빛바나나" },
-    };
 
     float time = 0;
 
@@ -186,30 +175,84 @@ public class UIController : MonoBehaviour
     void CookUIController() //요리 팝업 UI에 사용한 함수입니다.
     {
         
-        turkeyText.text = InventoryInfo.foodArray[(int)CookItemType.turkey].ToString();
-        yoggText.text = InventoryInfo.foodArray[(int)CookItemType.yogg].ToString();
-        mushroomText.text = InventoryInfo.foodArray[(int)CookItemType.mushroom].ToString();
-        berryText.text = InventoryInfo.foodArray[(int)CookItemType.berry].ToString();
-        dragonText.text = InventoryInfo.foodArray[(int)CookItemType.dragon].ToString();
-        breadText.text = InventoryInfo.foodArray[(int)CookItemType.bread].ToString();
-        bananaText.text = InventoryInfo.foodArray[(int)CookItemType.banana].ToString();
-      
+        turkeyText.text = InventoryInfo.turkey.ToString();
+        yoggText.text = InventoryInfo.yogg.ToString();
+        mushroomText.text = InventoryInfo.mushroom.ToString();
+        berryText.text = InventoryInfo.berry.ToString();
+        dragonText.text = InventoryInfo.dragon.ToString();
+        breadText.text = InventoryInfo.bread.ToString();
+        bananaText.text = InventoryInfo.banana.ToString();
     
         //Left
 
-        foreach (KeyValuePair<CookItemType, string> items in loadItemsPerType)
+        if(CookItemZoneLeft==CookItemType.nothing)
         {
-            if (CookItemZoneLeft == items.Key)
-                CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>(items.Value);
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
+        }
+        else if (CookItemZoneLeft == CookItemType.turkey)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/칠면조");
+        }
+        else if (CookItemZoneLeft == CookItemType.yogg)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요그소토스의눈알");
+        }
+        else if (CookItemZoneLeft == CookItemType.mushroom)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/발광버섯");
+        }
+        else if (CookItemZoneLeft == CookItemType.berry)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/산딸기");
+        }
+        else if (CookItemZoneLeft == CookItemType.dragon)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요정드래곤의날개");
+        }
+        else if (CookItemZoneLeft == CookItemType.bread)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/마법식빵");
+        }
+        else if (CookItemZoneLeft == CookItemType.banana)
+        {
+            CookLeft.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/보랏빛바나나");
         }
 
         //Right
 
-        foreach (KeyValuePair<CookItemType, string> items in loadItemsPerType)
+        if (CookItemZoneRight == CookItemType.nothing)
         {
-            if (CookItemZoneRight == items.Key)
-                CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>(items.Value);
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
         }
+        else if (CookItemZoneRight == CookItemType.turkey)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/칠면조");
+        }
+        else if (CookItemZoneRight == CookItemType.yogg)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요그소토스의눈알");
+        }
+        else if (CookItemZoneRight == CookItemType.mushroom)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/발광버섯");
+        }
+        else if (CookItemZoneRight == CookItemType.berry)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/산딸기");
+        }
+        else if (CookItemZoneRight == CookItemType.dragon)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/요정드래곤의날개");
+        }
+        else if (CookItemZoneRight == CookItemType.bread)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/마법식빵");
+        }
+        else if (CookItemZoneRight == CookItemType.banana)
+        {
+            CookRight.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/보랏빛바나나");
+        }
+
 
     }
 
@@ -301,59 +344,84 @@ public class UIController : MonoBehaviour
     void UseFoodQuantity() //재료를 소모하게 하는 함수입니다.
     {
         //좌
-        
-        foreach (CookItemType item in System.Enum.GetValues(typeof(CookItemType)))
-        {
-            if (item == CookItemType.nothing)
-            {
-                continue;
-            }
-            if (CookItemZoneLeft == item)
-            {
-                InventoryInfo.foodArray[(int)item]--;
-            }
-        }
-        
+        if (CookItemZoneLeft == CookItemType.turkey) InventoryInfo.turkey--;
+        else if (CookItemZoneLeft == CookItemType.yogg) InventoryInfo.yogg--;
+        else if (CookItemZoneLeft == CookItemType.mushroom) InventoryInfo.mushroom--;
+        else if (CookItemZoneLeft == CookItemType.berry) InventoryInfo.berry--;
+        else if (CookItemZoneLeft == CookItemType.dragon) InventoryInfo.dragon--;
+        else if (CookItemZoneLeft == CookItemType.bread) InventoryInfo.bread--;
+        else if (CookItemZoneLeft == CookItemType.banana) InventoryInfo.banana--;
+
         //우
-        foreach (CookItemType item in System.Enum.GetValues(typeof(CookItemType)))
-        {
-            if (item == CookItemType.nothing)
-            {
-                continue;
-            }
-            if (CookItemZoneRight == item)
-            {
-                InventoryInfo.foodArray[(int)item]--;
-            }
-        }
+        if (CookItemZoneRight == CookItemType.turkey) InventoryInfo.turkey--;
+        else if (CookItemZoneRight == CookItemType.yogg) InventoryInfo.yogg--;
+        else if (CookItemZoneRight == CookItemType.mushroom) InventoryInfo.mushroom--;
+        else if (CookItemZoneRight == CookItemType.berry) InventoryInfo.berry--;
+        else if (CookItemZoneRight == CookItemType.dragon) InventoryInfo.dragon--;
+        else if (CookItemZoneRight == CookItemType.bread) InventoryInfo.bread--;
+        else if (CookItemZoneRight == CookItemType.banana) InventoryInfo.banana--;
 
     }
 
     void CheckFoodQuantity() //재료를 0개인데 사용하지 않도록 브레이크를 걸어주는 함수
     {
-
-        foreach (CookItemType item in System.Enum.GetValues(typeof(CookItemType)))
+        if (CookItemZoneLeft == CookItemType.turkey && CookItemZoneRight == CookItemType.turkey && InventoryInfo.turkey <= 1)
         {
-            if (item == CookItemType.nothing)
-            {
-                continue;
-            }
-            if (CookItemZoneLeft == item && CookItemZoneRight == item && InventoryInfo.foodArray[(int)item] <= 1)
-            {
-                return;
-            }
+            return;
         }
-        foreach (CookItemType item in System.Enum.GetValues(typeof(CookItemType)))
+        else if (CookItemZoneLeft == CookItemType.yogg && CookItemZoneRight == CookItemType.yogg && InventoryInfo.yogg <= 1)
         {
-            if (item == CookItemType.nothing)
-            {
-                continue;
-            }
-            if ((CookItemZoneLeft == item || CookItemZoneRight == item) && InventoryInfo.foodArray[(int)item] <= 0)
-            {
-                return;
-            }
-        } 
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.mushroom && CookItemZoneRight == CookItemType.mushroom && InventoryInfo.mushroom <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.berry && CookItemZoneRight == CookItemType.berry && InventoryInfo.berry <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.dragon && CookItemZoneRight == CookItemType.dragon && InventoryInfo.dragon <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.bread && CookItemZoneRight == CookItemType.bread && InventoryInfo.bread <= 1)
+        {
+            return;
+        }
+        else if (CookItemZoneLeft == CookItemType.banana && CookItemZoneRight == CookItemType.banana && InventoryInfo.banana <= 1)
+        {
+            return;
+        }
+        //좌측or 우측 체크
+        else if ((CookItemZoneLeft == CookItemType.turkey || CookItemZoneRight == CookItemType.turkey) && InventoryInfo.turkey <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.yogg || CookItemZoneRight == CookItemType.yogg) && InventoryInfo.yogg <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.mushroom || CookItemZoneRight == CookItemType.mushroom) && InventoryInfo.mushroom <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.berry || CookItemZoneRight == CookItemType.berry) && InventoryInfo.berry <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.dragon || CookItemZoneRight == CookItemType.dragon) && InventoryInfo.dragon <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.bread || CookItemZoneRight == CookItemType.bread) && InventoryInfo.bread <= 0)
+        {
+            return;
+        }
+        else if ((CookItemZoneLeft == CookItemType.banana || CookItemZoneRight == CookItemType.banana) && InventoryInfo.banana <= 0)
+        {
+            return;
+        }
     }
 
     public void BoardGameExitButton() // 보드게임 UI X버튼을 누른다면?
