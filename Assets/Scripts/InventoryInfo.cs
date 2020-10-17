@@ -14,13 +14,7 @@ public class InventoryInfo : MonoBehaviour
     public static bool boom = false;
 
     // 음식재료
-    public static int turkey = 999;
-    public static int yogg = 999;
-    public static int mushroom = 999;
-    public static int berry = 999;
-    public static int dragon = 999;
-    public static int bread = 999;
-    public static int banana = 999;
+    public static int[] foodArray = new int[(int)UIController.CookItemType.banana + 1];
 
 
     //여기까지 아이템 목록이었습니다.
@@ -37,7 +31,10 @@ public class InventoryInfo : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        foreach (var item in System.Enum.GetValues(typeof(UIController.CookItemType)))
+        {
+            foodArray[(int)item] = 999;
+        }
     }
 
     // Update is called once per frame

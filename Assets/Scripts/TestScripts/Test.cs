@@ -1,43 +1,56 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
-public class Test : MonoBehaviour, IBeginDragHandler, IEndDragHandler, IDragHandler
+public class Test : MonoBehaviour
 {
-    public static Vector2 defaultposition;//드롭하면 다시 원위치로 보내기위한 변수
-   
-    // Start is called before the first frame update
-    void Start()
+
+    [SerializeField]
+    Slider loadingSlider;
+
+    private void Start()
     {
-        
+        loadingSlider.value = 0;
+        StartCoroutine(LoadAsyncScene());
+    }
+    public static void LoadScene(string sceneName)
+    {
+        SceneManager.LoadScene("Loading");
     }
 
-    // Update is called once per frame
-    void Update()
+    IEnumerator LoadAsyncScene()
     {
-        
-    }
+        yield return null;
 
-    void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)//드래그시작할 때
-    {
-        defaultposition = this.transform.position;
-    }
+        AsyncOperation asyncScene = SceneManager.LoadSceneAsync("Tavern_Inside");
+        asyncScene.allowSceneActivation = false;
+        float timeC = 0;
+        while (!asyncScene.isDone)
+        {
+            yield return null;
+            timeC += Time.deltaTime;
+            if (asyncScene.progress >= 0.9f)
+            {
+                loadingSlider.value = Mathf.Lerp(loadingSlider.value, 1, timeC);
+                if (loadingSlider.value == 1.0f)
+                {
+                    asyncScene.allowSceneActivation = true;
 
-    void IDragHandler.OnDrag(PointerEventData eventData)//드래그중일 때
-    {
-        Vector2 currentPos = Input.mousePosition;
-        this.transform.position = currentPos;
-    }
+                }
+            }
+            else
+            {
+                loadingSlider.value = Mathf.Lerp(loadingSlider.value, asyncScene.progress, timeC);
 
-    void IEndDragHandler.OnEndDrag(PointerEventData eventData)//드래그 끝났을 때 
-    {
-        Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-        this.transform.position = defaultposition;
-    }
+                if (loadingSlider.value >= asyncScene.progress)
+                {
+                    timeC = 0f;
+                }
 
-    void OnTriggerEnter2D(Collider2D col)
-    {
-        Debug.Log("sdasdasdas");
+            }
+            
+        }
     }
 }
