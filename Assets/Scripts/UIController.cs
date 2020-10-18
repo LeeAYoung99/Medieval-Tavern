@@ -11,10 +11,11 @@ public class UIController : MonoBehaviour
 
     public GameObject BoardGameUI; //실제 보드게임 UI 오브젝트 
     public GameObject CookUI; //실제 쿡 UI 오브젝트 
+    public GameObject DrinkUI;//실제 드링크 오브젝트
 
     //요리가 지금 되고 있나 아닌가 체크!
     public enum CookingPotState { isPotEmpty, isCooking, isFoodReady }; //PotEmpty: 비어있을때. isCooking:요리중이라 게이지 올라감. FoodReady: 요리가 준비되어서 가져갈수있음.
-    public enum Food { Nothing, WitchSoup, BerrySandwich, WingSalad, Spoiled, RoastedTurkey, Stick }; //Food+Drink둘다.
+    public enum Food { Nothing, WitchSoup, BerrySandwich, WingSalad, Spoiled, RoastedTurkey, Stick, Beer, SlimeCocktail, Wine }; //Food+Drink둘다.
     public static CookingPotState CookingState; //지금 팟 안에는 어떤 상태일까?
     public static Food PotFood; //팟 안에 어떤 음식이 들어있을까?
     //float cookingTime; //요리중일때 시간 돌아감.
@@ -46,6 +47,11 @@ public class UIController : MonoBehaviour
     public Text dragonText;
     public Text breadText;
     public Text bananaText;
+
+    //음료 텍스트(개수 숫자)
+    public Text beerText;
+    public Text slimeCocktailText;
+    public Text wineText;
 
     //음식 UI에 사용되는 넘들
     public enum CookItemType { nothing, turkey, yogg, mushroom, berry, dragon, bread, banana };
@@ -87,7 +93,7 @@ public class UIController : MonoBehaviour
         UIActiveController();
         BoardGameUIController();
         CookUIController();
-
+        DrinkUIController();
         
     }
 
@@ -106,7 +112,7 @@ public class UIController : MonoBehaviour
             }
             time += Time.deltaTime;
         }
-        else if (GlobalVariable.cookUIBool == true) //보드게임 UI가 켜져있는 상태라면
+        else if (GlobalVariable.cookUIBool == true) //쿡 UI가 켜져있는 상태라면
         {
             if (CookUI.activeSelf == false)//꺼져있으면
             {
@@ -116,6 +122,19 @@ public class UIController : MonoBehaviour
             if (time < 0.5f)
             {
                 CookUI.GetComponent<Image>().color = new Color(1, 1, 1, time / 0.5f); //0.5초에 걸쳐 밝아짐
+            }
+            time += Time.deltaTime;
+        }
+        else if (GlobalVariable.drinkUIBool == true) //드링크 UI가 켜져있는 상태라면
+        {
+            if (DrinkUI.activeSelf == false)//꺼져있으면
+            {
+                DrinkUI.SetActive(true);
+            }
+
+            if (time < 0.5f)
+            {
+                DrinkUI.GetComponent<Image>().color = new Color(1, 1, 1, time / 0.5f); //0.5초에 걸쳐 밝아짐
             }
             time += Time.deltaTime;
         }
@@ -206,6 +225,14 @@ public class UIController : MonoBehaviour
         }
 
     }
+
+    void DrinkUIController()
+    {
+        beerText.text = InventoryInfo.drinkArray[0].ToString();
+        slimeCocktailText.text = InventoryInfo.drinkArray[1].ToString();
+        wineText.text = InventoryInfo.drinkArray[2].ToString();
+    }
+
 
     //아래는 버튼에 사용한 스크립트입니다.
 
@@ -351,6 +378,55 @@ public class UIController : MonoBehaviour
             }
         }
     }
+
+    public void GetBeerButton()
+    {
+        if (InventoryInfo.drinkArray[0] > 0)
+        {
+            InventoryInfo.drinkArray[0]--;
+
+            Player.playerOwnedFood = Food.Beer;
+            
+            GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+            GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+            DrinkUI.SetActive(false); //UI도 끄기
+            time = 0; //시간도 초기화
+        }
+        else return;
+    }
+
+    public void GetSlimeCocktailButton()
+    {
+        if (InventoryInfo.drinkArray[1] > 0)
+        {
+            InventoryInfo.drinkArray[1]--;
+
+            Player.playerOwnedFood = Food.SlimeCocktail;
+
+            GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+            GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+            DrinkUI.SetActive(false); //UI도 끄기
+            time = 0; //시간도 초기화
+        }
+        else return;
+    }
+
+    public void GetWineButton()
+    {
+        if (InventoryInfo.drinkArray[2] > 0)
+        {
+            InventoryInfo.drinkArray[2]--;
+
+            Player.playerOwnedFood = Food.Wine;
+
+            GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+            GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+            DrinkUI.SetActive(false); //UI도 끄기
+            time = 0; //시간도 초기화
+        }
+        else return;
+    }
+
     public void BoardGameExitButton() // 보드게임 UI X버튼을 누른다면?
     {
         GlobalVariable.boardGameUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
@@ -366,6 +442,15 @@ public class UIController : MonoBehaviour
         CookUI.SetActive(false); //UI도 끄기
         time = 0; //시간도 초기화
     }
+
+    public void DrinkExitButton() // 쿡 UI X버튼을 누른다면?
+    {
+        GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+        GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+        DrinkUI.SetActive(false); //UI도 끄기
+        time = 0; //시간도 초기화
+    }
+
 
 }
 
