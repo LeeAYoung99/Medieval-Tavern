@@ -10,7 +10,6 @@ TagManager:
   - COOKLEFT
   - COOKRIGHT
   - TrashCan
-  - Drink
   layers:
   - Default
   - TransparentFX
