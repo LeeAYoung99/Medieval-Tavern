@@ -119,7 +119,17 @@ public class Player : MonoBehaviour
             }
             
         }
+        else if (col.transform.tag == "Drink") // Drink 영역에 충돌하면
+        {
+            if (playerOwnedFood != UIController.Food.Nothing) return; //플레이어가 음식 들고있으면 상호작용 x
 
+            targetPos = this.gameObject.transform.position; //제자리로 가!
+            nvAgent.destination = targetPos;
+            UpdateAnimation(0);//그 자리에 멈추니까 거리를 0으로 주는 애니메이션 업뎃
+
+            GlobalVariable.drinkUIBool = true; //Drink UI가 켜졌다!
+
+        }
     }
 
     void OnTriggerStay(Collider col)

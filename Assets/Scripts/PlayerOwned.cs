@@ -57,5 +57,17 @@ public class PlayerOwned : MonoBehaviour
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
         }
+        else if (Player.playerOwnedFood == UIController.Food.Beer)
+        {
+            MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/오크통맥주");
+        }
+        else if (Player.playerOwnedFood == UIController.Food.SlimeCocktail)
+        {
+            MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/슬라임칵테일");
+        }
+        else if (Player.playerOwnedFood == UIController.Food.Wine)
+        {
+            MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/와인");
+        }
     }
 }
