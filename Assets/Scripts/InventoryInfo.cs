@@ -14,7 +14,9 @@ public class InventoryInfo : MonoBehaviour
     public static bool boom = false;
 
     // 음식재료
-    public static int[] foodArray = new int[(int)UIController.CookItemType.banana + 1];
+    public static int[] foodArray = new int[(int)UIController.CookItemType.banana + 1]; //보유한 재료 개수
+    // 음료재료
+    public static int[] drinkArray = new int[3]; //beer, slimecocktail, wine 보유한 음료 개수
 
 
     //여기까지 아이템 목록이었습니다.
@@ -34,6 +36,10 @@ public class InventoryInfo : MonoBehaviour
         foreach (var item in System.Enum.GetValues(typeof(UIController.CookItemType)))
         {
             foodArray[(int)item] = 999;
+        }
+        for (int i = 0; i < drinkArray.Length; i++)
+        {
+            drinkArray[i] = 999;
         }
     }
 

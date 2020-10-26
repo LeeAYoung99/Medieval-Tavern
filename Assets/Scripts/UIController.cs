@@ -395,5 +395,60 @@ public class UIController : MonoBehaviour
         time = 0; //시간도 초기화
     }
 
+    public void GetBeerButton()
+    {
+        if (InventoryInfo.drinkArray[0] > 0)
+        {
+            InventoryInfo.drinkArray[0]--;
+
+            Player.playerOwnedFood = Food.Beer;
+
+            GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+            GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+            DrinkUI.SetActive(false); //UI도 끄기
+            time = 0; //시간도 초기화
+        }
+        else return;
+    }
+
+    public void GetSlimeCocktailButton()
+    {
+        if (InventoryInfo.drinkArray[1] > 0)
+        {
+            InventoryInfo.drinkArray[1]--;
+
+            Player.playerOwnedFood = Food.SlimeCocktail;
+
+            GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+            GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+            DrinkUI.SetActive(false); //UI도 끄기
+            time = 0; //시간도 초기화
+        }
+        else return;
+    }
+
+    public void GetWineButton()
+    {
+        if (InventoryInfo.drinkArray[2] > 0)
+        {
+            InventoryInfo.drinkArray[2]--;
+
+            Player.playerOwnedFood = Food.Wine;
+
+            GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+            GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+            DrinkUI.SetActive(false); //UI도 끄기
+            time = 0; //시간도 초기화
+        }
+        else return;
+    }
+    public void DrinkExitButton() // 쿡 UI X버튼을 누른다면?
+    {
+        GlobalVariable.drinkUIBool = false; //UI 꺼져있는지 확인하는 불 을 false로
+        GlobalVariable.didYouClickedButton = true; //버튼 버그 고치기 위함
+        DrinkUI.SetActive(false); //UI도 끄기
+        time = 0; //시간도 초기화
+    }
+
 }
 
