@@ -13,7 +13,7 @@ public class ChairInfo : MonoBehaviour
         public GameObject allocatedCharacter;
     }
 
-    Chair[] chairs = new Chair[chairNum];
+    public static Chair[] chairs = new Chair[chairNum];
     public GameObject[] ChairObject = new GameObject[chairNum];
 
     void Awake()
@@ -24,6 +24,8 @@ public class ChairInfo : MonoBehaviour
             chairs[i].rot = ChairObject[i].transform.rotation;
             chairs[i].allocatedCharacter = null;
         }
+        
     }
+   
 
 }
