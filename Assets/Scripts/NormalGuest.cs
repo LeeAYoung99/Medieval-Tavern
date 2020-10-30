@@ -10,6 +10,11 @@ public class NormalGuest : MonoBehaviour
     private Vector3 targetPos; // 캐릭터의 이동 타겟 위치
     private Animator animator;
 
+    public Transform GuestOwnedParent;
+    public GameObject GuestOwnedPrefab;
+
+    bool isChanged = false; //상태가 막 바뀐 때에서만 코드가 발생하도록 ㅠㅠ
+
     int rand = 0; //랜덤한 번째의 의자
 
     public enum NormalGuestState
@@ -66,15 +71,24 @@ public class NormalGuest : MonoBehaviour
 
         if (Vector3.Distance(targetPos, transform.position) < 0.6f)
         {
+            isChanged = true;
             myState = NormalGuestState.Order;
         }
     }
     void Order()
     {
-        nvAgent.enabled = false;
-        transform.position = new Vector3(ChairInfo.chairs[rand].pos.x, ChairInfo.chairs[rand].pos.y + 0.85f, ChairInfo.chairs[rand].pos.z);
-        transform.rotation = ChairInfo.chairs[rand].rot;
-        animator.SetBool("isSitting", true);
+        if (isChanged)
+        {
+            nvAgent.enabled = false;
+            transform.position = new Vector3(ChairInfo.chairs[rand].pos.x, ChairInfo.chairs[rand].pos.y + 0.85f, ChairInfo.chairs[rand].pos.z);
+            transform.rotation = ChairInfo.chairs[rand].rot;
+            transform.position += transform.forward * 0.8f;
+            animator.SetBool("isSitting", true);
+            GameObject ownedUI = Instantiate(GuestOwnedPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            ownedUI.gameObject.transform.SetParent(GuestOwnedParent, false);
+            isChanged = false;
+        }
+     
     }
     void SitAndEat()
     {
