@@ -15,7 +15,7 @@ public class UIController : MonoBehaviour
 
     //요리가 지금 되고 있나 아닌가 체크!
     public enum CookingPotState { isPotEmpty, isCooking, isFoodReady }; //PotEmpty: 비어있을때. isCooking:요리중이라 게이지 올라감. FoodReady: 요리가 준비되어서 가져갈수있음.
-    public enum Food { Nothing, WitchSoup, BerrySandwich, WingSalad, Spoiled, RoastedTurkey, Stick, Beer, SlimeCocktail, Wine }; //Food+Drink둘다.
+    public enum Food { Nothing, Spoiled, WitchSoup, BerrySandwich, WingSalad, RoastedTurkey, Stick, Beer, SlimeCocktail, Wine }; //Food+Drink둘다.
     public static CookingPotState CookingState; //지금 팟 안에는 어떤 상태일까?
     public static Food PotFood; //팟 안에 어떤 음식이 들어있을까?
     //float cookingTime; //요리중일때 시간 돌아감.

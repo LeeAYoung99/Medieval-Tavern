@@ -7,6 +7,7 @@ public class GuestOwned : MonoBehaviour
 {
 
     public GameObject MyImage;//말풍선 위에 있는 이미지
+    
     /// <summary>
     /// 주의!  transform.root를 사용했으므로 생성되는 게스트 캐릭터는 부모 오브젝트가 없도록 하세요!
     /// </summary>
@@ -22,6 +23,7 @@ public class GuestOwned : MonoBehaviour
     void Start()
     {
         camToGuestDistance = 0;
+        
 
         MyCamera = GameObject.Find("Main Camera");
     }
@@ -30,54 +32,54 @@ public class GuestOwned : MonoBehaviour
     void Update()
     {
         this.transform.position = Camera.main.WorldToScreenPoint(transform.root.transform.position + new Vector3(3.0f, 2.8f, 2.0f)); //플레이어 위치에 맞추어이동
-        //ChangeImage();
+        ChangeImage();
         ChangeUITransparent();
 
     }
-    /*
+    
     void ChangeImage()
     {
-        if (Player.playerOwnedFood == UIController.Food.Stick)
+        if (NormalGuest.guestOrderedFood == UIController.Food.Stick)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/꼬치");
         }
-        else if (Player.playerOwnedFood == UIController.Food.WitchSoup)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.WitchSoup)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/마녀의수프");
         }
-        else if (Player.playerOwnedFood == UIController.Food.BerrySandwich)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.BerrySandwich)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/딸기샌드위치");
         }
-        else if (Player.playerOwnedFood == UIController.Food.WingSalad)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.WingSalad)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/날개샐러드");
         }
-        else if (Player.playerOwnedFood == UIController.Food.Spoiled)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.Spoiled)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/망한요리");
         }
-        else if (Player.playerOwnedFood == UIController.Food.RoastedTurkey)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.RoastedTurkey)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/칠면조정식");
         }
-        else if (Player.playerOwnedFood == UIController.Food.Nothing)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.Nothing)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
         }
-        else if (Player.playerOwnedFood == UIController.Food.Beer)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.Beer)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/오크통맥주");
         }
-        else if (Player.playerOwnedFood == UIController.Food.SlimeCocktail)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.SlimeCocktail)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/슬라임칵테일");
         }
-        else if (Player.playerOwnedFood == UIController.Food.Wine)
+        else if (NormalGuest.guestOrderedFood == UIController.Food.Wine)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/와인");
         }
-    }*/
+    }
 
 
     void ChangeUITransparent()

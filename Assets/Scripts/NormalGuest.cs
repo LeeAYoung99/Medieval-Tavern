@@ -5,10 +5,11 @@ using UnityEngine.AI;
 
 public class NormalGuest : MonoBehaviour
 {
-    private Transform _transform;
+   // private Transform _transform;
     private NavMeshAgent nvAgent;
     private Vector3 targetPos; // 캐릭터의 이동 타겟 위치
     private Animator animator;
+    private GameObject PlayerLocation;//플레이어 위치만 가져올거임!
 
     public Transform GuestOwnedParent;
     public GameObject GuestOwnedPrefab;
@@ -16,6 +17,15 @@ public class NormalGuest : MonoBehaviour
     bool isChanged = false; //상태가 막 바뀐 때에서만 코드가 발생하도록 ㅠㅠ
 
     int rand = 0; //랜덤한 번째의 의자
+
+    public static UIController.Food guestOrderedFood;
+    GameObject ownedUI;
+
+    float time = 0;
+    Vector3 startPos;//시작 포지션
+    Vector3 sitBeforePos; //앉기 직전 포지션
+
+    private InventoryInfo InventoryInfoScript;
 
     public enum NormalGuestState
     {
@@ -29,10 +39,16 @@ public class NormalGuest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _transform = this.gameObject.GetComponent<Transform>();
+        //_transform = this.gameObject.GetComponent<Transform>();
         nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
         targetPos = new Vector3(0, 0, 0);
         animator = this.gameObject.GetComponent<Animator>();
+        PlayerLocation = GameObject.Find("Player");
+        startPos = transform.position;
+
+        InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
+
+        guestOrderedFood = (UIController.Food)Random.Range(2, System.Enum.GetValues(typeof(UIController.Food)).Length);
     }
 
     // Update is called once per frame
@@ -71,6 +87,7 @@ public class NormalGuest : MonoBehaviour
 
         if (Vector3.Distance(targetPos, transform.position) < 0.6f)
         {
+            sitBeforePos = transform.position;
             isChanged = true;
             myState = NormalGuestState.Order;
         }
@@ -83,20 +100,62 @@ public class NormalGuest : MonoBehaviour
             transform.position = new Vector3(ChairInfo.chairs[rand].pos.x, ChairInfo.chairs[rand].pos.y + 0.85f, ChairInfo.chairs[rand].pos.z);
             transform.rotation = ChairInfo.chairs[rand].rot;
             transform.position += transform.forward * 0.8f;
-            animator.SetBool("isSitting", true);
-            GameObject ownedUI = Instantiate(GuestOwnedPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
+            animator.SetInteger("State", 1);
+            ownedUI = Instantiate(GuestOwnedPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
             ownedUI.gameObject.transform.SetParent(GuestOwnedParent, false);
+
             isChanged = false;
         }
-     
+
+        if (Vector3.Distance(transform.position, PlayerLocation.transform.position) < 2.8f && guestOrderedFood == Player.playerOwnedFood) //음식 전달. 숫자 조절하면 거리 달라짐
+        {
+            InventoryInfo.money += 12000;
+            InventoryInfoScript.MoneyGainEffect(12000);
+           
+
+            Player.playerOwnedFood = UIController.Food.Nothing;
+            myState = NormalGuestState.SitAndEat;
+            if (ownedUI)
+            {
+                Destroy(ownedUI.gameObject);
+            }
+            isChanged = true;
+
+        }
+
     }
     void SitAndEat()
     {
+        if(isChanged)
+        {
+            animator.SetInteger("State", 2);
 
+            isChanged = false;
+        }
+        time += Time.deltaTime;
+        if (time > 10.0f)
+        {
+            isChanged = true;
+            myState = NormalGuestState.GoOut;
+        }
     }
     void GoOut()
     {
+        if (isChanged)
+        {
+            transform.position = sitBeforePos;
+           // transform.position = startPos;
+            animator.SetInteger("State", 0);
+            nvAgent.enabled = true;
+            targetPos = startPos;
+            nvAgent.destination = targetPos;
 
+            isChanged = false;
+        }
+        if (Vector3.Distance(transform.position, startPos) < 2.8f)
+        {
+            Destroy(this.gameObject);
+        }
     }
     
 }

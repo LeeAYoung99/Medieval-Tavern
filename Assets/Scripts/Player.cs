@@ -94,6 +94,7 @@ public class Player : MonoBehaviour
             animator.SetBool("isRunning", false);
         }
     }
+    
 
     void OnTriggerEnter(Collider col)
     {
