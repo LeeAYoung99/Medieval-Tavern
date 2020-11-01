@@ -5,7 +5,6 @@ using UnityEngine.AI;
 
 public class NormalGuest : MonoBehaviour
 {
-   // private Transform _transform;
     private NavMeshAgent nvAgent;
     private Vector3 targetPos; // 캐릭터의 이동 타겟 위치
     private Animator animator;
@@ -27,6 +26,20 @@ public class NormalGuest : MonoBehaviour
 
     private InventoryInfo InventoryInfoScript;
 
+    Dictionary<UIController.Food, int> foodSellPrice = new Dictionary<UIController.Food, int>()
+    {
+        {UIController.Food.Nothing, 0},
+        {UIController.Food.Spoiled, 0},
+        {UIController.Food.WitchSoup, 50},
+        {UIController.Food.BerrySandwich, 80},
+        {UIController.Food.WingSalad, 90},
+        {UIController.Food.RoastedTurkey, 100},
+        {UIController.Food.Stick, 180},
+        {UIController.Food.Beer, 30},
+        {UIController.Food.SlimeCocktail, 70},
+        {UIController.Food.Wine, 65}
+    };
+
     public enum NormalGuestState
     {
         FindChair = 0,
@@ -39,7 +52,6 @@ public class NormalGuest : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        //_transform = this.gameObject.GetComponent<Transform>();
         nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
         targetPos = new Vector3(0, 0, 0);
         animator = this.gameObject.GetComponent<Animator>();
@@ -109,8 +121,15 @@ public class NormalGuest : MonoBehaviour
 
         if (Vector3.Distance(transform.position, PlayerLocation.transform.position) < 2.8f && guestOrderedFood == Player.playerOwnedFood) //음식 전달. 숫자 조절하면 거리 달라짐
         {
-            InventoryInfo.money += 12000;
-            InventoryInfoScript.MoneyGainEffect(12000);
+            foreach (KeyValuePair<UIController.Food, int> items in foodSellPrice) //음식 가격에 맞추어 돈벌기
+            {
+                if (guestOrderedFood == items.Key)
+                {
+                    InventoryInfo.money += items.Value;
+                    InventoryInfoScript.MoneyGainEffect(items.Value);
+                }
+            }
+            
            
 
             Player.playerOwnedFood = UIController.Food.Nothing;
@@ -144,7 +163,6 @@ public class NormalGuest : MonoBehaviour
         if (isChanged)
         {
             transform.position = sitBeforePos;
-           // transform.position = startPos;
             animator.SetInteger("State", 0);
             nvAgent.enabled = true;
             targetPos = startPos;
