@@ -15,14 +15,16 @@ public class NormalGuest : MonoBehaviour
 
     bool isChanged = false; //상태가 막 바뀐 때에서만 코드가 발생하도록 ㅠㅠ
 
-    int rand = 0; //랜덤한 번째의 의자
+    int chairNum = 0; //랜덤한 번째의 의자
 
-    public static UIController.Food guestOrderedFood;
+    public UIController.Food guestOrderedFood; //주문할 음식
     GameObject ownedUI;
 
     float time = 0;
     Vector3 startPos;//시작 포지션
     Vector3 sitBeforePos; //앉기 직전 포지션
+
+    int chairIndex;
 
     private InventoryInfo InventoryInfoScript;
 
@@ -61,12 +63,13 @@ public class NormalGuest : MonoBehaviour
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
 
         guestOrderedFood = (UIController.Food)Random.Range(2, System.Enum.GetValues(typeof(UIController.Food)).Length);
+
+        chairIndex = GuestGenerator.currentNum; //랜덤 의자 뽑기
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        
         switch (myState)
         {
             case NormalGuestState.FindChair:
@@ -85,19 +88,21 @@ public class NormalGuest : MonoBehaviour
                 GoOut();
                 return;
         }
+        Debug.Log(chairNum);
     }
 
     void FindChair()
     {
+        
         if (targetPos == new Vector3(0,0,0)) //타겟 포지션이 정해지지 않았을때
         {
-            rand = Random.Range(0, 16); //랜덤 의자 뽑기
-            targetPos = new Vector3(ChairInfo.chairs[rand].pos.x, transform.position.y, ChairInfo.chairs[rand].pos.z - 3.0f); //그 의자 위치로 이동
+            chairNum = chairIndex;
+            targetPos = new Vector3(ChairInfo.chairs[chairNum].pos.x, transform.position.y, ChairInfo.chairs[chairNum].pos.z); //그 의자 위치로 이동
         }
         
         nvAgent.destination = targetPos;
 
-        if (Vector3.Distance(targetPos, transform.position) < 0.6f)
+        if (Vector3.Distance(targetPos, transform.position) < 1.6f)
         {
             sitBeforePos = transform.position;
             isChanged = true;
@@ -109,14 +114,28 @@ public class NormalGuest : MonoBehaviour
         if (isChanged)
         {
             nvAgent.enabled = false;
-            transform.position = new Vector3(ChairInfo.chairs[rand].pos.x, ChairInfo.chairs[rand].pos.y + 0.85f, ChairInfo.chairs[rand].pos.z);
-            transform.rotation = ChairInfo.chairs[rand].rot;
+            transform.position = new Vector3(ChairInfo.chairs[chairNum].pos.x, ChairInfo.chairs[chairNum].pos.y + 0.85f, ChairInfo.chairs[chairNum].pos.z);
+            transform.rotation = ChairInfo.chairs[chairNum].rot;
             transform.position += transform.forward * 0.8f;
             animator.SetInteger("State", 1);
             ownedUI = Instantiate(GuestOwnedPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
             ownedUI.gameObject.transform.SetParent(GuestOwnedParent, false);
 
             isChanged = false;
+            time = 0;
+        }
+
+        //시간이 다 되면 주문 생까고 나가기
+        time += Time.deltaTime;
+        if (time > 40.0f)
+        {
+            isChanged = true;
+            if (ownedUI)
+            {
+                Destroy(ownedUI.gameObject);
+            }
+            animator.SetInteger("State", 2);
+            myState = NormalGuestState.GoOut;
         }
 
         if (Vector3.Distance(transform.position, PlayerLocation.transform.position) < 2.8f && guestOrderedFood == Player.playerOwnedFood) //음식 전달. 숫자 조절하면 거리 달라짐
@@ -130,8 +149,6 @@ public class NormalGuest : MonoBehaviour
                 }
             }
             
-           
-
             Player.playerOwnedFood = UIController.Food.Nothing;
             myState = NormalGuestState.SitAndEat;
             if (ownedUI)
@@ -141,7 +158,6 @@ public class NormalGuest : MonoBehaviour
             isChanged = true;
 
         }
-
     }
     void SitAndEat()
     {
@@ -150,6 +166,7 @@ public class NormalGuest : MonoBehaviour
             animator.SetInteger("State", 2);
 
             isChanged = false;
+            time = 0;
         }
         time += Time.deltaTime;
         if (time > 10.0f)

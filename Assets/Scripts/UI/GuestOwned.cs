@@ -19,11 +19,14 @@ public class GuestOwned : MonoBehaviour
     public float minimumDist = 23.0f;
     public float maximumDist = 40.0f;
 
+
+
     // Start is called before the first frame update
     void Start()
     {
         camToGuestDistance = 0;
-        
+
+         
 
         MyCamera = GameObject.Find("Main Camera");
     }
@@ -39,43 +42,45 @@ public class GuestOwned : MonoBehaviour
     
     void ChangeImage()
     {
-        if (NormalGuest.guestOrderedFood == UIController.Food.Stick)
+        var NormalGuestScript = transform.root.GetComponent<NormalGuest>();
+
+        if (NormalGuestScript.guestOrderedFood == UIController.Food.Stick)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/꼬치");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.WitchSoup)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.WitchSoup)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/마녀의수프");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.BerrySandwich)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.BerrySandwich)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/딸기샌드위치");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.WingSalad)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.WingSalad)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/날개샐러드");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.Spoiled)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.Spoiled)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/망한요리");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.RoastedTurkey)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.RoastedTurkey)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/칠면조정식");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.Nothing)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.Nothing)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/VoidImage");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.Beer)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.Beer)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/오크통맥주");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.SlimeCocktail)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.SlimeCocktail)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/슬라임칵테일");
         }
-        else if (NormalGuest.guestOrderedFood == UIController.Food.Wine)
+        else if (NormalGuestScript.guestOrderedFood == UIController.Food.Wine)
         {
             MyImage.GetComponent<Image>().sprite = Resources.Load<Sprite>("Images/Item/와인");
         }
