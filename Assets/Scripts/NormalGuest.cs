@@ -9,6 +9,7 @@ public class NormalGuest : MonoBehaviour
     private Vector3 targetPos; // 캐릭터의 이동 타겟 위치
     private Animator animator;
     private GameObject PlayerLocation;//플레이어 위치만 가져올거임!
+    private GameObject DoorLocation;
 
     public Transform GuestOwnedParent;
     public GameObject GuestOwnedPrefab;
@@ -44,20 +45,25 @@ public class NormalGuest : MonoBehaviour
 
     public enum NormalGuestState
     {
-        FindChair = 0,
-        Order = 1,
-        SitAndEat = 2,
-        GoOut = 3
+        FindDoorIn = 0,
+        FindChair,
+        Order,
+        SitAndEat,
+        FindDoorOut,
+        GoOut
     }
     NormalGuestState myState = 0;
 
     // Start is called before the first frame update
     void Start()
     {
+        GlobalVariable.currentGuestNum++;
+
         nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
         targetPos = new Vector3(0, 0, 0);
         animator = this.gameObject.GetComponent<Animator>();
         PlayerLocation = GameObject.Find("Player");
+        DoorLocation = GameObject.Find("Door");
         startPos = transform.position;
 
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
@@ -72,6 +78,10 @@ public class NormalGuest : MonoBehaviour
     {
         switch (myState)
         {
+            case NormalGuestState.FindDoorIn:
+                FindDoorIn();
+                return;
+
             case NormalGuestState.FindChair:
                 FindChair();
                 return;
@@ -84,6 +94,10 @@ public class NormalGuest : MonoBehaviour
                 SitAndEat();
                 return;
 
+            case NormalGuestState.FindDoorOut:
+                FindDoorOut();
+                return;
+
             case NormalGuestState.GoOut:
                 GoOut();
                 return;
@@ -91,13 +105,31 @@ public class NormalGuest : MonoBehaviour
         Debug.Log(chairNum);
     }
 
+    void FindDoorIn()
+    {
+        if (targetPos == new Vector3(0, 0, 0)) //타겟 포지션이 정해지지 않았을때
+        {
+            targetPos = DoorLocation.transform.position;
+        }
+
+        nvAgent.destination = targetPos;
+
+        if (Vector3.Distance(targetPos, transform.position) < 1.6f)
+        {
+            isChanged = true;
+            myState = NormalGuestState.FindChair;
+        }
+
+    }
+
     void FindChair()
     {
         
-        if (targetPos == new Vector3(0,0,0)) //타겟 포지션이 정해지지 않았을때
+        if (isChanged)
         {
             chairNum = chairIndex;
             targetPos = new Vector3(ChairInfo.chairs[chairNum].pos.x, transform.position.y, ChairInfo.chairs[chairNum].pos.z); //그 의자 위치로 이동
+            isChanged = false;
         }
         
         nvAgent.destination = targetPos;
@@ -135,7 +167,7 @@ public class NormalGuest : MonoBehaviour
                 Destroy(ownedUI.gameObject);
             }
             animator.SetInteger("State", 2);
-            myState = NormalGuestState.GoOut;
+            myState = NormalGuestState.FindDoorOut;
         }
 
         if (Vector3.Distance(transform.position, PlayerLocation.transform.position) < 2.8f && guestOrderedFood == Player.playerOwnedFood) //음식 전달. 숫자 조절하면 거리 달라짐
@@ -172,6 +204,24 @@ public class NormalGuest : MonoBehaviour
         if (time > 10.0f)
         {
             isChanged = true;
+            myState = NormalGuestState.FindDoorOut;
+        }
+    }
+    void FindDoorOut()
+    {
+        if (isChanged)
+        {
+            transform.position = sitBeforePos;
+            animator.SetInteger("State", 0);
+            nvAgent.enabled = true;
+            targetPos = DoorLocation.transform.position;
+            nvAgent.destination = targetPos;
+
+            isChanged = false;
+        }
+        if (Vector3.Distance(targetPos, transform.position) < 1.6f)
+        {
+            isChanged = true;
             myState = NormalGuestState.GoOut;
         }
     }
@@ -179,9 +229,6 @@ public class NormalGuest : MonoBehaviour
     {
         if (isChanged)
         {
-            transform.position = sitBeforePos;
-            animator.SetInteger("State", 0);
-            nvAgent.enabled = true;
             targetPos = startPos;
             nvAgent.destination = targetPos;
 
@@ -189,6 +236,7 @@ public class NormalGuest : MonoBehaviour
         }
         if (Vector3.Distance(transform.position, startPos) < 2.8f)
         {
+            GlobalVariable.currentGuestNum--;
             Destroy(this.gameObject);
         }
     }

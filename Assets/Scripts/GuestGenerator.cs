@@ -8,7 +8,9 @@ public class GuestGenerator : MonoBehaviour
     public static int indexCount = 0;
     public static int currentNum = 0;
 
-    public GameObject Guest;
+    public GameObject MaleGuest;
+    public GameObject FemaleGuest;
+    bool isGenerateOn = false;
 
     // Start is called before the first frame update
     void Start()
@@ -31,12 +33,25 @@ public class GuestGenerator : MonoBehaviour
     {
         while (indexCount < 16)
         {
-            float randTime = Random.Range(6.0f, 20.0f);
+            isGenerateOn = true;
+            //float randTime = 2.0f;
+            float randTime = Random.Range(1.0f, 20.0f);
             yield return new WaitForSeconds(randTime);
 
+
+            int randGuest = Random.Range(0, 2);
             currentNum = samplenum[indexCount];
-            Instantiate(Guest, transform.position, transform.rotation);
+            if (randGuest == 0)
+            {
+                Instantiate(MaleGuest, transform.position, transform.rotation);
+            }
+            else if (randGuest == 1)
+            {
+                Instantiate(FemaleGuest, transform.position, transform.rotation);
+            }
+         
             indexCount++;
+            isGenerateOn = false;
         }
 
     }
@@ -44,6 +59,23 @@ public class GuestGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GlobalVariable.currentGuestNum>=16)
+        {
+            StopCoroutine("Generate");
+        }
+        else if(GlobalVariable.currentGuestNum < 16)
+        {
+            if (indexCount == 16)
+            {
+                indexCount = 0;
+            }
+
+            if (isGenerateOn == false)
+            {
+                StartCoroutine("Generate");
+            }
+            
+        }
     }
 
 

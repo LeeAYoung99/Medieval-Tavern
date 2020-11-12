@@ -883,6 +883,7 @@ GameObject:
   - component: {fileID: 6510541081733014095}
   - component: {fileID: 6510541081733014094}
   - component: {fileID: 6510541081733014088}
+  - component: {fileID: 4119125477073664370}
   m_Layer: 0
   m_Name: Guest
   m_TagString: Untagged
@@ -978,6 +979,22 @@ MonoBehaviour:
   GuestOwnedPrefab: {fileID: 5444216990321961760, guid: 7f09a72ca8943d147869124bdfbf173f,
     type: 3}
   guestOrderedFood: 0
+--- !u!208 &4119125477073664370
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 364719132399665975}
+  m_Enabled: 0
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.5, y: 1, z: 0.5}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 0, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &364719132399665977
 GameObject:
   m_ObjectHideFlags: 0
