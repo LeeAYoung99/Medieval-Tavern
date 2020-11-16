@@ -32,7 +32,6 @@ public class GlobalVariable : MonoBehaviour
 
     void Update()
     {
-       Debug.Log(currentGuestNum);
     }
     
 }

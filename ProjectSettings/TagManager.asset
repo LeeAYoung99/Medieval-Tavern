@@ -11,6 +11,7 @@ TagManager:
   - COOKRIGHT
   - TrashCan
   - Drink
+  - Guest
   layers:
   - Default
   - TransparentFX

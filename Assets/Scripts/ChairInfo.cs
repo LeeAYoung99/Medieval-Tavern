@@ -10,7 +10,7 @@ public class ChairInfo : MonoBehaviour
     {
         public Vector3 pos;
         public Quaternion rot;
-        public GameObject allocatedCharacter;
+        public bool isAllocated;
     }
 
     public static Chair[] chairs = new Chair[chairNum];
@@ -22,7 +22,7 @@ public class ChairInfo : MonoBehaviour
         {
             chairs[i].pos = ChairObject[i].transform.position;
             chairs[i].rot = ChairObject[i].transform.rotation;
-            chairs[i].allocatedCharacter = null;
+            chairs[i].isAllocated = false;
         }
         
     }

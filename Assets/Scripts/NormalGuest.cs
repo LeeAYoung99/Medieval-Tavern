@@ -15,6 +15,7 @@ public class NormalGuest : MonoBehaviour
     public GameObject GuestOwnedPrefab;
 
     bool isChanged = false; //상태가 막 바뀐 때에서만 코드가 발생하도록 ㅠㅠ
+    bool wasOrdered = false;
 
     int chairNum = 0; //랜덤한 번째의 의자
 
@@ -26,6 +27,7 @@ public class NormalGuest : MonoBehaviour
     Vector3 sitBeforePos; //앉기 직전 포지션
 
     int chairIndex;
+    int orderCount;
 
     private InventoryInfo InventoryInfoScript;
 
@@ -69,6 +71,7 @@ public class NormalGuest : MonoBehaviour
         InventoryInfoScript = GameObject.Find("InventoryInfo").GetComponent("InventoryInfo") as InventoryInfo;
 
         guestOrderedFood = (UIController.Food)Random.Range(2, System.Enum.GetValues(typeof(UIController.Food)).Length);
+        orderCount = Random.Range(1, 4);
 
         chairIndex = GuestGenerator.currentNum; //랜덤 의자 뽑기
     }
@@ -102,7 +105,6 @@ public class NormalGuest : MonoBehaviour
                 GoOut();
                 return;
         }
-        Debug.Log(chairNum);
     }
 
     void FindDoorIn()
@@ -138,6 +140,7 @@ public class NormalGuest : MonoBehaviour
         {
             sitBeforePos = transform.position;
             isChanged = true;
+           
             myState = NormalGuestState.Order;
         }
     }
@@ -145,10 +148,20 @@ public class NormalGuest : MonoBehaviour
     {
         if (isChanged)
         {
+            orderCount--;
             nvAgent.enabled = false;
-            transform.position = new Vector3(ChairInfo.chairs[chairNum].pos.x, ChairInfo.chairs[chairNum].pos.y + 0.85f, ChairInfo.chairs[chairNum].pos.z);
+
+            transform.position = new Vector3(ChairInfo.chairs[chairNum].pos.x, ChairInfo.chairs[chairNum].pos.y + 1.3f, ChairInfo.chairs[chairNum].pos.z);
             transform.rotation = ChairInfo.chairs[chairNum].rot;
-            transform.position += transform.forward * 0.8f;
+
+            
+
+            if (!wasOrdered)
+            {
+                transform.position += transform.forward * 0.8f;
+                wasOrdered = false;
+            }
+
             animator.SetInteger("State", 1);
             ownedUI = Instantiate(GuestOwnedPrefab, new Vector3(0.0f, 0.0f, 0.0f), Quaternion.identity);
             ownedUI.gameObject.transform.SetParent(GuestOwnedParent, false);
@@ -195,6 +208,7 @@ public class NormalGuest : MonoBehaviour
     {
         if(isChanged)
         {
+            ChairInfo.chairs[chairNum].isAllocated = true; //자리있어요
             animator.SetInteger("State", 2);
 
             isChanged = false;
@@ -204,13 +218,25 @@ public class NormalGuest : MonoBehaviour
         if (time > 10.0f)
         {
             isChanged = true;
-            myState = NormalGuestState.FindDoorOut;
+            if (orderCount <= 0)
+            {
+                myState = NormalGuestState.FindDoorOut;
+                return;
+            }
+            myState = NormalGuestState.Order;
+            wasOrdered = true;
+            guestOrderedFood = (UIController.Food)Random.Range(2, System.Enum.GetValues(typeof(UIController.Food)).Length);
+            orderCount--;
+
         }
     }
     void FindDoorOut()
     {
         if (isChanged)
         {
+
+            ChairInfo.chairs[chairNum].isAllocated = false; //자리없어용
+
             transform.position = sitBeforePos;
             animator.SetInteger("State", 0);
             nvAgent.enabled = true;
