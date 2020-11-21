@@ -35,7 +35,7 @@ public class GuestGenerator : MonoBehaviour
         {
             isGenerateOn = true;
             //float randTime = 2.0f;
-            float randTime = Random.Range(1.0f, 20.0f);
+            float randTime = Random.Range(5.0f, 20.0f);
             yield return new WaitForSeconds(randTime);
 
 

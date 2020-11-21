@@ -25,7 +25,6 @@ public class DoorMove : MonoBehaviour
             if (Door.transform.rotation.z <= -0.5)
                 Door.transform.RotateAround(new Vector3(-14.14f, -0.1059799f, -36.25f), Vector3.up, 50 * Time.deltaTime);
         }
-        Debug.Log(Door.transform.rotation.z);
 
     }
 

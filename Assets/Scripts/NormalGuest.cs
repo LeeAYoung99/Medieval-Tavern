@@ -60,7 +60,7 @@ public class NormalGuest : MonoBehaviour
     void Start()
     {
         GlobalVariable.currentGuestNum++;
-
+        
         nvAgent = this.gameObject.GetComponent<NavMeshAgent>();
         targetPos = new Vector3(0, 0, 0);
         animator = this.gameObject.GetComponent<Animator>();
