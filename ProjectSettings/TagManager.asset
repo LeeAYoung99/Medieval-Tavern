@@ -12,6 +12,7 @@ TagManager:
   - TrashCan
   - Drink
   - Guest
+  - Trash
   layers:
   - Default
   - TransparentFX

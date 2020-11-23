@@ -8,11 +8,11 @@ public class TrashGenerator : MonoBehaviour
      * 쓰레기를 만드는 스크립트 
      */
 
-    Vector3[] randpos = new Vector3[5];
+    public Vector3[] randpos = new Vector3[5];
     public GameObject trashPrefab;
     public GameObject trashPrefab2;
-    bool[] randposBool = new bool[5];
-    int percent = 0;
+    public bool[] randposBool = new bool[5];
+    
 
     // Start is called before the first frame update
     void Start()
@@ -44,20 +44,26 @@ public class TrashGenerator : MonoBehaviour
         {
             yield return new WaitForSeconds(5f);
 
+            int percent1 = 0;
+            int percent2 = 0;
+            int percent3 = 0;
+
             if (GlobalVariable.currentGuestNum > 2)
             {
-                percent = Random.Range(0, 5);
-                if (percent == 0)
+                percent1 = Random.Range(0, 1); //0,5
+                if (percent1 == 0)
                 {
-                    percent = Random.Range(0, 5);
-                    if (randposBool[percent] == false)
+                    percent2 = Random.Range(0, 5);
+                    if (randposBool[percent2] == false)
                     {
-                        percent = Random.Range(0, 2);
-                        if (percent == 0)
-                            Instantiate(trashPrefab, randpos[percent], transform.rotation);
+                        randposBool[percent2] = true;
+
+                        percent3 = Random.Range(0, 2);
+                        if (percent3 == 0)
+                            Instantiate(trashPrefab, randpos[percent2], transform.rotation);
                         else
-                            Instantiate(trashPrefab2, randpos[percent], transform.rotation);
-                        randposBool[percent] = true;
+                            Instantiate(trashPrefab2, randpos[percent2], transform.rotation);
+                       
                     }
                 }
             }

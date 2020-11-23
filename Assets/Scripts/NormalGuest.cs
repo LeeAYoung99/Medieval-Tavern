@@ -130,13 +130,13 @@ public class NormalGuest : MonoBehaviour
         if (isChanged)
         {
             chairNum = chairIndex;
-            targetPos = new Vector3(ChairInfo.chairs[chairNum].pos.x, transform.position.y, ChairInfo.chairs[chairNum].pos.z); //그 의자 위치로 이동
+            targetPos = new Vector3(ChairInfo.chairs[chairNum].pos.x, transform.position.y, ChairInfo.chairs[chairNum].pos.z); //그 의자 위치로 이동 변경전엔 z값안뺌
             isChanged = false;
         }
         
         nvAgent.destination = targetPos;
 
-        if (Vector3.Distance(targetPos, transform.position) < 1.6f)
+        if (Vector3.Distance(targetPos, transform.position) < 1.6f) //변경전 1.6f
         {
             sitBeforePos = transform.position;
             isChanged = true;

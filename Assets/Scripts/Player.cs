@@ -16,6 +16,9 @@ public class Player : MonoBehaviour
     private float distanceLeft;
     private Animator animator;
 
+    TrashGenerator trashgenerator;
+    PlayerBroom playerbroom;
+
     public GameObject PlayerOwnedUI;
 
     public static UIController.Food playerOwnedFood; //플레이어가 현재 들고 있는 음식은 ?
@@ -32,6 +35,8 @@ public class Player : MonoBehaviour
         
         distanceLeft = 0.0f;
         playerOwnedFood = UIController.Food.Nothing; //플레이어가 보유한 음식 비우기.
+        trashgenerator= GameObject.Find("TrashGenerator").GetComponent<TrashGenerator>();
+        playerbroom = GameObject.Find("BroomSample").GetComponent<PlayerBroom>();
 
     }
 
@@ -109,7 +114,8 @@ public class Player : MonoBehaviour
         else if (col.transform.tag == "Cook") // Cook 영역에 충돌하면
         {
             if (playerOwnedFood != UIController.Food.Nothing) return; //플레이어가 음식 들고있으면 상호작용 x
-            
+            if (playerbroom.broomOwn) return; //플레이어가 빗자루 들고있으면 상호작용 x
+
             if (UIController.CookingState == UIController.CookingPotState.isPotEmpty)
             {
                 targetPos = this.gameObject.transform.position; //제자리로 가!
@@ -123,6 +129,7 @@ public class Player : MonoBehaviour
         else if (col.transform.tag == "Drink") // Drink 영역에 충돌하면
         {
             if (playerOwnedFood != UIController.Food.Nothing) return; //플레이어가 음식 들고있으면 상호작용 x
+            if (playerbroom.broomOwn) return; //플레이어가 빗자루 들고있으면 상호작용 x
 
             targetPos = this.gameObject.transform.position; //제자리로 가!
             nvAgent.destination = targetPos;
@@ -138,7 +145,8 @@ public class Player : MonoBehaviour
         if (col.transform.tag == "Cook") // Cook 영역에 충돌하면
         {
             if (playerOwnedFood != UIController.Food.Nothing) return; //플레이어가 음식 들고있으면 상호작용 x
-            
+            if (playerbroom.broomOwn) return; //플레이어가 빗자루 들고있으면 상호작용 x
+
             if (UIController.CookingState == UIController.CookingPotState.isFoodReady)
             {
                 playerOwnedFood = UIController.PotFood; //플레이어에게 팟 안에 든 음식 주기
@@ -154,6 +162,20 @@ public class Player : MonoBehaviour
             if (playerOwnedFood == UIController.Food.Nothing) return;
 
             playerOwnedFood = UIController.Food.Nothing;
+        }
+
+        else if (col.transform.tag == "Trash")
+        {
+            if (!playerbroom.broomOwn) return; //플레이어가 빗자루 들고있으면 상호작용 x
+            for (int i = 0; i < 5; i++)
+            {
+                if (col.transform.position == trashgenerator.randpos[i])
+                {
+                    trashgenerator.randposBool[i] = false;
+                }
+            }
+           
+            Destroy(col.gameObject);
         }
     }
     

@@ -27,7 +27,7 @@ public class ClickEventPrefab : MonoBehaviour
 
     void EffectUpdate()
     {
-
+        if (Time.timeScale == 0) Destroy(this.gameObject);
         if (EffectTime < _FadeTime)
         {
             transform.localScale = new Vector3(transform.localScale.x + EffectTime * speed, transform.localScale.y, transform.localScale.z + EffectTime * speed);
