@@ -13,6 +13,7 @@ TagManager:
   - Drink
   - Guest
   - Trash
+  - Plate
   layers:
   - Default
   - TransparentFX
