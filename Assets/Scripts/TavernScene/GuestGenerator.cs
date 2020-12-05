@@ -12,6 +12,8 @@ public class GuestGenerator : MonoBehaviour
     public GameObject FemaleGuest;
     bool isGenerateOn = false;
 
+    private IEnumerator guestCo;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -26,16 +28,19 @@ public class GuestGenerator : MonoBehaviour
             samplenum[i] = samplenum[j];
             samplenum[j] = tmp;
         }
-        StartCoroutine("Generate");
+        guestCo = Generate();
+        StartCoroutine(guestCo);
     }
 
     IEnumerator Generate()
     {
         while (indexCount < 16)
         {
+            
+
             isGenerateOn = true;
-            float randTime = 2.0f;
-            //float randTime = Random.Range(5.0f, 20.0f);
+            //float randTime = 2.0f;
+            float randTime = Random.Range(5.0f, 20.0f);
             yield return new WaitForSeconds(randTime);
 
 
@@ -59,9 +64,13 @@ public class GuestGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(GlobalVariable.currentGuestNum>=16)
+        if (GlobalVariable.isEnding == true)
         {
-            StopCoroutine("Generate");
+            StopCoroutine(guestCo);
+        }
+        else if (GlobalVariable.currentGuestNum>=16)
+        {
+            StopCoroutine(guestCo);
         }
         else if(GlobalVariable.currentGuestNum < 16)
         {
@@ -72,7 +81,7 @@ public class GuestGenerator : MonoBehaviour
 
             if (isGenerateOn == false)
             {
-                StartCoroutine("Generate");
+                StartCoroutine(guestCo);
             }
             
         }

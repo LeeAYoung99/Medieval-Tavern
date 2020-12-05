@@ -12,6 +12,8 @@ public class GlobalVariable : MonoBehaviour
 
     public static int currentGuestNum = 0; //현재 맵에 존재하는 인구수
 
+    public static bool isEnding = false; //엔딩 이펙트 중인가?
+
     public static bool isUIOn() //UI가 한개라도 켜져있는지 리턴하는 전역함수.
     {
         if (boardGameUIBool == true)

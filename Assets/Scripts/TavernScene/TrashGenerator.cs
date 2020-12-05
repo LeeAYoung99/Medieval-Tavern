@@ -35,14 +35,14 @@ public class TrashGenerator : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-      
+        
     }
 
     IEnumerator Generator()
     {
         while (true)
         {
-            yield return new WaitForSeconds(5f);
+            yield return new WaitForSeconds(10f);
 
             int percent1 = 0;
             int percent2 = 0;
@@ -50,7 +50,7 @@ public class TrashGenerator : MonoBehaviour
 
             if (GlobalVariable.currentGuestNum > 2)
             {
-                percent1 = Random.Range(0, 1); //0,5
+                percent1 = Random.Range(0, 5); //0,5
                 if (percent1 == 0)
                 {
                     percent2 = Random.Range(0, 5);
@@ -67,6 +67,21 @@ public class TrashGenerator : MonoBehaviour
                     }
                 }
             }
+            int dirtyness = 0;
+            int randnum = 0;
+            for (int i = 0; i < 5; i++)
+            {
+                if (randposBool[i] == true) dirtyness++;
+            }
+            if (dirtyness >= 2)
+            {
+                randnum = Random.Range(0, 5);
+                if (randnum == 0)
+                {
+                    if (InventoryInfo.reputation - 1 >= -10 && InventoryInfo.reputation - 1 <= 10) InventoryInfo.reputation--;
+                }
+            }
+
         }
 
     }

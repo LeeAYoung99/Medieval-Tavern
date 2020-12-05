@@ -6,7 +6,8 @@ using UnityEngine.UI;
 public class InventoryInfo : MonoBehaviour
 {
     // 여기서부터는 실제로 보유하고 있는 아이템 목록입니다.
-    public static int money = 999999;
+    public static int money = 3000;
+    public static int reputation = 0;
 
     // 보드게임
     public static bool resistance = false;
@@ -29,6 +30,7 @@ public class InventoryInfo : MonoBehaviour
     /// 
     /// </summary>
     public Text moneyText;
+    public Text repText;
 
     // Start is called before the first frame update
     void Start()
@@ -47,13 +49,18 @@ public class InventoryInfo : MonoBehaviour
     void Update()
     {
         MoneyTextUpdate();
-        
+        RepTextUpate();
         
     }
 
     void MoneyTextUpdate()
     {
         moneyText.text = "Gold: " + money.ToString();
+    }
+
+    void RepTextUpate()
+    {
+        repText.text = "Reputation: " + reputation.ToString();
     }
     
     public void MoneyGainEffect(int money)

@@ -9,10 +9,16 @@ public class Timer : MonoBehaviour
     public static int OneSecond = 0;
     int hour = 17;
     int min = 0;
+
+    public GameObject ResultPrefab;
+    public Transform ResultParent;
+
+    private IEnumerator timerCo;
     // Start is called before the first frame update
     void Start()
     {
-        StartCoroutine("MyTimer");
+        timerCo = MyTimer();
+        StartCoroutine(timerCo);
     }
 
     // Update is called once per frame
@@ -27,6 +33,19 @@ public class Timer : MonoBehaviour
             TimeText.text = hour.ToString() + ":" + min.ToString();
         }
 
+        if (hour == 21 && min == 0)
+        {
+            GlobalVariable.isEnding = true;
+            GameObject _result = Instantiate(ResultPrefab, new Vector2(0.0f, 0.0f), Quaternion.identity);
+            _result.gameObject.transform.SetParent(ResultParent, false);
+        }
+
+        if (GlobalVariable.isEnding == true)
+        {
+            StopCoroutine(timerCo);
+        }
+        
+
 
     }
 
@@ -34,7 +53,9 @@ public class Timer : MonoBehaviour
     {
         while(true)
         {
+
             yield return new WaitForSeconds(1f);
+            
             OneSecond++;
             min++;
 

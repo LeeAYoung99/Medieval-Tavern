@@ -32,7 +32,7 @@ public class CameraMove : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(!GlobalVariable.isUIOn()) //UI가 꺼져있다면
+        if(!GlobalVariable.isUIOn()&&!GlobalVariable.isEnding) //UI가 꺼져있다면
         {
             CameraMouseOver(); //화면에 마우스를 올려놓아 움직이는 것을 허용한다
         }

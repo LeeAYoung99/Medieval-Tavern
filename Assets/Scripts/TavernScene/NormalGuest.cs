@@ -174,6 +174,7 @@ public class NormalGuest : MonoBehaviour
         time += Time.deltaTime;
         if (time > 40.0f)
         {
+            if (InventoryInfo.reputation - 1 >= -10 && InventoryInfo.reputation-1 <= 10) InventoryInfo.reputation--;
             isChanged = true;
             if (ownedUI)
             {
@@ -217,6 +218,7 @@ public class NormalGuest : MonoBehaviour
         time += Time.deltaTime;
         if (time > 10.0f)
         {
+            if (InventoryInfo.reputation + 1 >= -10 && InventoryInfo.reputation + 1 <= 10) InventoryInfo.reputation++;
             isChanged = true;
             if (orderCount <= 0)
             {

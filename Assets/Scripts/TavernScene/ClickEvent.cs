@@ -7,44 +7,56 @@ public class ClickEvent : MonoBehaviour
     private Camera cam;
     public GameObject ClickPrefab;
 
+    private IEnumerator clickCo;
     // Start is called before the first frame update
     void Start()
     {
         cam = GameObject.Find("Main Camera").GetComponent<Camera>();
+        clickCo = ClickEventOccur();
+        StartCoroutine(clickCo);
     }
 
     // Update is called once per frame
     void Update()
     {
-        StartCoroutine(this.ClickEventOccur());
+        if (GlobalVariable.isEnding == true)
+        {
+            StopCoroutine(clickCo);
+        }
     }
 
     IEnumerator ClickEventOccur()
     {
-        if (!GlobalVariable.isUIOn()) //UI가 꺼져있다면
+        while (true)
         {
-            // 마우스 입력을 받았 을 때
-            if (Input.GetMouseButtonUp(0))
+            yield return null;
+            
+            if (!GlobalVariable.isUIOn()) //UI가 꺼져있다면
             {
-                // 마우스로 찍은 위치의 좌표 값을 가져온다
-                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-                RaycastHit hit;
-                if (Physics.Raycast(ray, out hit, 10000f))
+                // 마우스 입력을 받았 을 때
+                if (Input.GetMouseButtonUp(0))
                 {
-
-                    if (hit.transform.name == "Floor")
+                    // 마우스로 찍은 위치의 좌표 값을 가져온다
+                    Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                    RaycastHit hit;
+                    if (Physics.Raycast(ray, out hit, 10000f))
                     {
-                        Instantiate(ClickPrefab, new Vector3(hit.point.x, hit.point.y+0.2f, hit.point.z) , Quaternion.identity);
+
+                        if (hit.transform.name == "Floor")
+                        {
+                            Instantiate(ClickPrefab, new Vector3(hit.point.x, hit.point.y + 0.2f, hit.point.z), Quaternion.identity);
+                        }
+
                     }
-
                 }
+
+
+
             }
-            
-            
 
+            
         }
-
-        yield return null;
+        
 
     }
 }

@@ -43,6 +43,8 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+
         MoveCharacter();
         if (playerOwnedFood == UIController.Food.Nothing && PlayerOwnedUI.activeSelf == true) //음식에 아무것도 없고 ui가 켜져있으면
         {
@@ -56,6 +58,11 @@ public class Player : MonoBehaviour
     
     void MoveCharacter()
     {
+        if (GlobalVariable.isEnding == true)
+        {
+            return;
+        }
+
         if (GlobalVariable.isUIOn()) return; //UI가 켜져있으면 안움직임
         if (GlobalVariable.didYouClickedButton == true)
         {

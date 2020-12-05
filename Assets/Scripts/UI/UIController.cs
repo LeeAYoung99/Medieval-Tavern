@@ -239,6 +239,7 @@ public class UIController : MonoBehaviour
 
     public void ResistanceItemBuy() //아이템 구매 
     {
+        if (InventoryInfo.money - 12000 < 0) return;
         if (InventoryInfo.resistance == false)
         {
             InventoryInfo.money -= 12000;
@@ -249,6 +250,7 @@ public class UIController : MonoBehaviour
 
     public void TabulaItemBuy() //아이템 구매 
     {
+        if (InventoryInfo.money - 23000 < 0) return;
         if (InventoryInfo.tabula == false)
         {
             InventoryInfo.money -= 23000;
@@ -259,6 +261,7 @@ public class UIController : MonoBehaviour
 
     public void BoomItemBuy() //아이템 구매 
     {
+        if (InventoryInfo.money - 47000 < 0) return;
         if (InventoryInfo.boom == false)
         {
             InventoryInfo.money -= 47000;
