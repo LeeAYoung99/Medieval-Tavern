@@ -19,6 +19,8 @@ public class Player : MonoBehaviour
     TrashGenerator trashgenerator;
     PlayerBroom playerbroom;
 
+    public static bool isMoving = false;//GM_Script에서 사용할 것
+
     public GameObject PlayerOwnedUI;
 
     public static UIController.Food playerOwnedFood; //플레이어가 현재 들고 있는 음식은 ?
@@ -100,10 +102,12 @@ public class Player : MonoBehaviour
         if(_distanceLeft>1.0f) //도착지점 거리차이에 비례해서 애니메이터가 작동하고 안하게 함
         {
             animator.SetBool("isRunning", true);
+            isMoving = true;
         }
         else
         {
             animator.SetBool("isRunning", false);
+            isMoving = false;
         }
     }
     
