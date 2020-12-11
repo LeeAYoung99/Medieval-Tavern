@@ -75,23 +75,28 @@ public class Player : MonoBehaviour
         // 마우스 입력을 받았 을 때
         if (Input.GetMouseButtonUp(0))
         {
-            // 마우스로 찍은 위치의 좌표 값을 가져온다
-            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if (Physics.Raycast(ray, out hit, 10000f))
+            if (PlayerEnergy.energy > 0.1f)
             {
-
-                if (hit.transform.name == "Floor") //땅을 클릭하면
+                // 마우스로 찍은 위치의 좌표 값을 가져온다
+                Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, 10000f))
                 {
-                    targetPos = hit.point;
-                    // 추적 대상의 위치를 설정하면 바로 추적 시작
-                    nvAgent.destination = targetPos;
-                }
 
+                    if (hit.transform.name == "Floor") //땅을 클릭하면
+                    {
+                        targetPos = hit.point;
+                        // 추적 대상의 위치를 설정하면 바로 추적 시작
+                        nvAgent.destination = targetPos;
+                    }
+
+                }
             }
         }
         distanceLeft = Vector3.Distance(targetPos, this.gameObject.transform.position); //거리 계산
         UpdateAnimation(distanceLeft); //거리에 맞추어 애니메이션 업데이트 
+
+        nvAgent.speed = 9.0f + 7.0f * PlayerEnergy.energy; //에너지가 적으면 이속이 느려짐
 
         return;
 
@@ -102,11 +107,17 @@ public class Player : MonoBehaviour
         if(_distanceLeft>1.0f) //도착지점 거리차이에 비례해서 애니메이터가 작동하고 안하게 함
         {
             animator.SetBool("isRunning", true);
+
+           
+
             isMoving = true;
         }
         else
         {
             animator.SetBool("isRunning", false);
+
+      
+
             isMoving = false;
         }
     }

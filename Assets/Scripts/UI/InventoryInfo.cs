@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class InventoryInfo : MonoBehaviour
 {
     // 여기서부터는 실제로 보유하고 있는 아이템 목록입니다.
-    public static int money = 3000;
+    public static int money = 100000;
     public static int reputation = 0;
 
     // 보드게임

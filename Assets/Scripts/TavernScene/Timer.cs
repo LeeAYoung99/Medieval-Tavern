@@ -7,16 +7,19 @@ public class Timer : MonoBehaviour
 {
     public Text TimeText;
     public static int OneSecond = 0;
-    int hour = 17;
-    int min = 0;
+    public int hour = 17;
+    public int min = 0;
 
     public GameObject ResultPrefab;
     public Transform ResultParent;
+
+    ResultController resultController;
 
     private IEnumerator timerCo;
     // Start is called before the first frame update
     void Start()
     {
+        resultController = GameObject.Find("ResultController").GetComponent<ResultController>();
         timerCo = MyTimer();
         StartCoroutine(timerCo);
     }
@@ -36,6 +39,8 @@ public class Timer : MonoBehaviour
         if (hour == 21 && min == 0)
         {
             GlobalVariable.isEnding = true;
+            resultController.EndMoney = InventoryInfo.money;
+            resultController.EndRep = InventoryInfo.reputation;
             GameObject _result = Instantiate(ResultPrefab, new Vector2(0.0f, 0.0f), Quaternion.identity);
             _result.gameObject.transform.SetParent(ResultParent, false);
         }

@@ -9,6 +9,7 @@ public class GlobalVariable : MonoBehaviour
     public static bool cookSliderBool = false;
     public static bool drinkUIBool = false;
     public static bool didYouClickedButton = false;
+    public static bool isBuffOn = false;
 
     public static int currentGuestNum = 0; //현재 맵에 존재하는 인구수
 

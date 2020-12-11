@@ -283,7 +283,11 @@ public class UIController : MonoBehaviour
 
         //재료 소모
         UseFoodQuantity();
-        
+
+        if (PlayerEnergy.energy - 0.4f > 0)
+        {
+            PlayerEnergy.energy -= 0.4f;
+        }
 
         //조합에 따라 요리가 다르게
         if ((CookItemZoneLeft == CookItemType.yogg && CookItemZoneRight == CookItemType.dragon) ||
